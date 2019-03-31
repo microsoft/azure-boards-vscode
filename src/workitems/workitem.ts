@@ -88,7 +88,7 @@ export class WorkItemListNode extends TreeNode {
   async getListOfWorkItems(
     api: DevOpsClient.WebApi,
     wiql: string
-  ): Promise<(number | undefined)[]> {
+  ): Promise<number[]> {
     var witApi = await api.getWorkItemTrackingApi();
     var result = await witApi.queryByWiql(
       {
@@ -102,8 +102,12 @@ export class WorkItemListNode extends TreeNode {
       }
     );
 
-    let workItemIds =
-      result.workItems != null ? result.workItems.map(x => x.id) : [];
+    const workItemIds: number[] =
+      (result.workItems &&
+        (result.workItems
+          .map(x => x.id)
+          .filter(x => x !== undefined) as number[])) ||
+      [];
 
     return workItemIds;
   }
