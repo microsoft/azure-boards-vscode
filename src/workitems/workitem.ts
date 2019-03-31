@@ -138,6 +138,12 @@ export class WorkItemNode extends TreeNode {
     this.workItemId = +workItemComposite.workItemId;
     this.workItemType = workItemComposite.workItemType;
     this.workItemIcon = workItemComposite.workItemIcon;
+
+    this.command = {
+      command: "azure-boards.prefill",
+      arguments: [this.workItemId],
+      title: "Prefill commit message"
+    };
   }
 }
 
