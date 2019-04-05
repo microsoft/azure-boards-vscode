@@ -31,6 +31,35 @@
           "name": "My work items"
         }
       ]
+    },
+    "commands": [
+      {
+        "command": "azure-boards.refresh-work-items",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "azure-boards.open-work-item",
+        "title": "Open work item"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "azure-boards.refresh-work-items",
+          "when": "view == work-items",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "azure-boards.open-work-item",
+          "when": "view == work-items && viewItem == work-item"
+        }
+      ]
     }
   },
   "scripts": {
