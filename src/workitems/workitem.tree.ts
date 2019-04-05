@@ -7,6 +7,7 @@ export class WorkItemTreeNodeProvider
   private _onDidChangeTreeData: vscode.EventEmitter<
     TreeNode | undefined
   > = new vscode.EventEmitter<TreeNode | undefined>();
+
   readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined> = this
     ._onDidChangeTreeData.event;
 
@@ -72,7 +73,7 @@ export class WorkItemListNode extends TreeNode {
         "System.Title",
         "System.WorkItemType"
       ]);
-      const workItemList = workItems.map(
+      const workItemList = (workItems || []).map(
         wi => new WorkItemComposite(wi, workItemTypeIcons)
       );
 
@@ -138,6 +139,9 @@ export class WorkItemNode extends TreeNode {
     this.workItemId = +workItemComposite.workItemId;
     this.workItemType = workItemComposite.workItemType;
 
+    this.contextValue = "work-item";
+
+    // Command when clicking on a work item
     this.command = {
       command: "azure-boards.prefill",
       arguments: [this.workItemId],
