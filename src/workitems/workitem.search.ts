@@ -25,7 +25,7 @@ export class SearchProvider {
     );
 
     let body: string = await res.readBody();
-    let jsonObject: SearchRoot = JSON.parse(body);
+    let jsonObject: ISearchRoot = JSON.parse(body);
 
     const workitems: WorkItem[] = jsonObject.results.map(x => new WorkItem(x));
 
@@ -33,13 +33,15 @@ export class SearchProvider {
   }
 }
 
-export class SearchRoot {
-  public count: number = 0;
-  public results: SearchResult[] = [];
+export interface ISearchRoot {
+  count: number;
+  results: ISearchResult[];
 }
 
-export class SearchResult {
-  public fields: WorkItem[] = [];
+interface ISearchResult {
+  fields: {
+    [fieldRefName: string]: string | number | boolean | Date;
+  };
 }
 
 export class WorkItem {
@@ -49,15 +51,19 @@ export class WorkItem {
   public readonly title: string;
   public readonly workItemType: string;
 
-  constructor(results: SearchResult) {
-    this.id = results.fields ? results.fields["system.id"] : "-1";
+  constructor(results: ISearchResult) {
+    this.id = results.fields ? results.fields["system.id"].toString() : "-1";
     this.assignedTo = results.fields
-      ? results.fields["system.assignedto"]
-      : null;
-    this.state = results.fields ? results.fields["system.state"] : null;
-    this.title = results.fields ? results.fields["system.title"] : null;
+      ? results.fields["system.assignedto"].toString()
+      : "";
+    this.state = results.fields
+      ? results.fields["system.state"].toString()
+      : "";
+    this.title = results.fields
+      ? results.fields["system.title"].toString()
+      : "";
     this.workItemType = results.fields
-      ? results.fields["system.workitemtype"]
-      : null;
+      ? results.fields["system.workitemtype"].toString()
+      : "";
   }
 }

@@ -1,5 +1,7 @@
-import { WorkItemType } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
-import { WorkItem } from "./workitem.search";
+import {
+  WorkItemType,
+  WorkItem
+} from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 
 export class WorkItemTypeIcon {
   public readonly type: string = "";
@@ -22,9 +24,11 @@ export class WorkItemComposite {
   public readonly workItemUrl: string = "";
 
   constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
-    this.workItemType = workItem.workItemType ? workItem.workItemType : "";
-    this.workItemId = workItem.id ? workItem.id : "-1";
-    this.workItemTitle = workItem.title ? workItem.title : "";
+    this.workItemType = workItem.fields
+      ? workItem.fields["System.WorkItemType"]
+      : "";
+    this.workItemId = workItem.fields ? workItem.fields["System.Id"] : -1;
+    this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
     //get index of icon from list of avaible icons for the work item type
     //seems like there should be a better way of doing this?

@@ -1,7 +1,7 @@
 import * as DevOpsClient from "azure-devops-node-api";
 import * as vscode from "vscode";
 import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
-import { SearchProvider, WorkItem } from "./workitem.search";
+import { MyWorkProvider } from "./workitem.mywork";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
@@ -15,29 +15,12 @@ export class WorkItemTreeNodeProvider
   getChildren(
     element?: TreeNodeParent | undefined
   ): vscode.ProviderResult<TreeNodeParent[]> {
-    const projectName: string = getProject();
-
     if (!element) {
       return [
-        //new TreeNodeChildWorkItem(
-        //  "My activity",
-        //  "SELECT [System.Id], [System.Title] FROM [WorkItems] WHERE [System.AssignedTo] = @me"
-        //),
-        new TreeNodeChildWorkItem("Assigned to me", {
-          searchText: "a: @Me",
-          $skip: 0,
-          $top: 100,
-          filters: {
-            "System.TeamProject": ["" + projectName + ""]
-          },
-          $orderBy: [
-            {
-              field: "system.changeddate",
-              sortOrder: "DESC"
-            }
-          ],
-          includeFacets: false
-        })
+        new TreeNodeChildWorkItem("Assigned to me", "AssignedToMe"),
+        new TreeNodeChildWorkItem("My activity", "MyActivity"),
+        new TreeNodeChildWorkItem("Mentioned", "Mentioned"),
+        new TreeNodeChildWorkItem("Following", "Following")
       ];
     }
 
@@ -68,7 +51,7 @@ export class TreeNodeParent extends vscode.TreeItem {
 }
 
 export class TreeNodeChildWorkItem extends TreeNodeParent {
-  constructor(label: string, private readonly data: Object) {
+  constructor(label: string, private readonly type: string) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
   }
 
@@ -83,18 +66,21 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
       const handler = DevOpsClient.getHandlerFromToken(token);
       const api = new DevOpsClient.WebApi(orgUrl, handler);
 
-      //go get the work items using the search provider
-      const search: SearchProvider = new SearchProvider(org, api);
-      const workItemSearchResults: WorkItem[] = await search.searchWorkItems(
-        this.data
+      //go get the work items from the mywork provider
+      const myWorkProvider: MyWorkProvider = new MyWorkProvider(
+        org,
+        project,
+        api
       );
+
+      const workitems = await myWorkProvider.getMyWorkItems(this.type);
 
       //get the list of work item types for the project
       const workItemTypeIcons = await this.getWorkItemTypeIcons(api, project);
 
       //map up work items from search results and the icons into the
       //workitemcomposite object
-      const workItemList = (workItemSearchResults || []).map(
+      const workItemList = workitems.map(
         wi => new WorkItemComposite(wi, workItemTypeIcons)
       );
 
@@ -145,7 +131,7 @@ export class WorkItemNode extends TreeNodeParent {
 }
 
 function getToken(): string {
-  return "3tyncx5qaest2tfczwqbwijmdlgrmrdsdiswrlhafh2yhggsbssq";
+  return "6krvvgluyu5kdydywm5ywvgh7sdt3wmo624cpcod7igks3cl7noa";
 }
 
 function getProject(): string {
