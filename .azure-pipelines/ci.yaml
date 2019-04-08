@@ -1,0 +1,14 @@
+pool:
+  name: Hosted VS2017
+  demands: npm
+
+pr:
+  - master
+
+steps:
+  - task: Npm@1
+    displayName: "npm install"
+    inputs:
+      verbose: false
+
+  - script: npm run compile
