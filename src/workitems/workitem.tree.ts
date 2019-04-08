@@ -1,41 +1,57 @@
 import * as DevOpsClient from "azure-devops-node-api";
 import * as vscode from "vscode";
 import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
+import { SearchProvider, WorkItem } from "./workitem.search";
 
 export class WorkItemTreeNodeProvider
-  implements vscode.TreeDataProvider<TreeNode> {
+  implements vscode.TreeDataProvider<TreeNodeParent> {
   private _onDidChangeTreeData: vscode.EventEmitter<
-    TreeNode | undefined
-  > = new vscode.EventEmitter<TreeNode | undefined>();
+    TreeNodeParent | undefined
+  > = new vscode.EventEmitter<TreeNodeParent | undefined>();
 
-  readonly onDidChangeTreeData: vscode.Event<TreeNode | undefined> = this
+  readonly onDidChangeTreeData: vscode.Event<TreeNodeParent | undefined> = this
     ._onDidChangeTreeData.event;
 
   getChildren(
-    element?: TreeNode | undefined
-  ): vscode.ProviderResult<TreeNode[]> {
+    element?: TreeNodeParent | undefined
+  ): vscode.ProviderResult<TreeNodeParent[]> {
+    const projectName: string = getProject();
+
     if (!element) {
       return [
-        new WorkItemListNode(
-          "Assigned to me",
-          "SELECT [System.Id], [System.Title] FROM [WorkItems] WHERE [System.AssignedTo] = @me"
-        ),
-        new WorkItemListNode(
-          "Followed by me",
-          "SELECT [System.Id], [System.Title] FROM [WorkItems] WHERE [System.Id] IN (@follows)"
-        )
+        //new TreeNodeChildWorkItem(
+        //  "My activity",
+        //  "SELECT [System.Id], [System.Title] FROM [WorkItems] WHERE [System.AssignedTo] = @me"
+        //),
+        new TreeNodeChildWorkItem("Assigned to me", {
+          searchText: "a: @Me",
+          $skip: 0,
+          $top: 100,
+          filters: {
+            "System.TeamProject": ["" + projectName + ""]
+          },
+          $orderBy: [
+            {
+              field: "system.changeddate",
+              sortOrder: "DESC"
+            }
+          ],
+          includeFacets: false
+        })
       ];
     }
 
     return element.getWorkItemsForNode();
   }
 
-  getTreeItem(element: TreeNode): vscode.TreeItem | Thenable<vscode.TreeItem> {
+  getTreeItem(
+    element: TreeNodeParent
+  ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 }
 
-export class TreeNode extends vscode.TreeItem {
+export class TreeNodeParent extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     collapsibleState: vscode.TreeItemCollapsibleState = vscode
@@ -46,34 +62,39 @@ export class TreeNode extends vscode.TreeItem {
     this.iconPath = vscode.ThemeIcon.File;
   }
 
-  async getWorkItemsForNode(): Promise<TreeNode[]> {
+  async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
     return [];
   }
 }
 
-export class WorkItemListNode extends TreeNode {
-  constructor(label: string, private readonly wiql: string) {
+export class TreeNodeChildWorkItem extends TreeNodeParent {
+  constructor(label: string, private readonly data: Object) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
   }
 
-  async getWorkItemsForNode(): Promise<TreeNode[]> {
+  async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
     try {
       const token = getToken();
-      const handler = DevOpsClient.getHandlerFromToken(token);
+      const org = getOrg();
+      const orgUrl = "https://dev.azure.com/" + org;
+      const project = getProject();
 
-      const orgUrl = "https://danhellem.visualstudio.com";
+      //build the devops web api to be used in other calls
+      const handler = DevOpsClient.getHandlerFromToken(token);
       const api = new DevOpsClient.WebApi(orgUrl, handler);
 
-      const workItemTypeIcons = await this.getWorkItemTypeIcons(api);
-      const workItemIds = await this.getListOfWorkItems(api, this.wiql);
+      //go get the work items using the search provider
+      const search: SearchProvider = new SearchProvider(org, api);
+      const workItemSearchResults: WorkItem[] = await search.searchWorkItems(
+        this.data
+      );
 
-      const witApi = await api.getWorkItemTrackingApi();
-      const workItems = await witApi.getWorkItems(workItemIds, [
-        "System.Id",
-        "System.Title",
-        "System.WorkItemType"
-      ]);
-      const workItemList = (workItems || []).map(
+      //get the list of work item types for the project
+      const workItemTypeIcons = await this.getWorkItemTypeIcons(api, project);
+
+      //map up work items from search results and the icons into the
+      //workitemcomposite object
+      const workItemList = (workItemSearchResults || []).map(
         wi => new WorkItemComposite(wi, workItemTypeIcons)
       );
 
@@ -85,39 +106,13 @@ export class WorkItemListNode extends TreeNode {
     return [];
   }
 
-  async getListOfWorkItems(
-    api: DevOpsClient.WebApi,
-    wiql: string
-  ): Promise<number[]> {
-    var witApi = await api.getWorkItemTrackingApi();
-    var result = await witApi.queryByWiql(
-      {
-        query: wiql
-      },
-      {
-        project: "My Work",
-        team: "",
-        projectId: "",
-        teamId: ""
-      }
-    );
-
-    const workItemIds: number[] =
-      (result.workItems &&
-        (result.workItems
-          .map(x => x.id)
-          .filter(x => x !== undefined) as number[])) ||
-      [];
-
-    return workItemIds;
-  }
-
   async getWorkItemTypeIcons(
-    api: DevOpsClient.WebApi
+    api: DevOpsClient.WebApi,
+    project: string
   ): Promise<(WorkItemTypeIcon)[]> {
     const witApi = await api.getWorkItemTrackingApi();
+    const workItemTypes = await witApi.getWorkItemTypes(project);
 
-    const workItemTypes = await witApi.getWorkItemTypes("My Work");
     const icons =
       workItemTypes !== null
         ? workItemTypes.map(x => new WorkItemTypeIcon(x))
@@ -127,7 +122,7 @@ export class WorkItemListNode extends TreeNode {
   }
 }
 
-export class WorkItemNode extends TreeNode {
+export class WorkItemNode extends TreeNodeParent {
   public readonly workItemId: number;
   public readonly workItemType: string;
   public readonly iconPath: vscode.Uri;
@@ -141,7 +136,6 @@ export class WorkItemNode extends TreeNode {
 
     this.contextValue = "work-item";
 
-    // Command when clicking on a work item
     this.command = {
       command: "azure-boards.prefill",
       arguments: [this.workItemId],
@@ -151,5 +145,13 @@ export class WorkItemNode extends TreeNode {
 }
 
 function getToken(): string {
-  return "6wmjj7ypmnbntu3vizs62shohlrkyzzvu3k234tx54neafhprrpq";
+  return "3tyncx5qaest2tfczwqbwijmdlgrmrdsdiswrlhafh2yhggsbssq";
+}
+
+function getProject(): string {
+  return "VSCodeTest";
+}
+
+function getOrg(): string {
+  return "basicprocess";
 }
