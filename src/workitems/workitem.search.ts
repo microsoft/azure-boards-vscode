@@ -39,7 +39,7 @@ export class SearchRoot {
 }
 
 export class SearchResult {
-  public fields: WorkItem[] = [];
+  public fields: { [refName:string]: number | string | boolean | Date };
 }
 
 export class WorkItem {
