@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { GitExtension } from "../externals/git";
+import { WorkItemTreeNodeProvider } from "./workitem.tree";
 
 export function registerCommands() {
   vscode.commands.registerCommand("azure-boards.open-work-item", ars => {
@@ -8,8 +9,11 @@ export function registerCommands() {
   });
 
   vscode.commands.registerCommand("azure-boards.refresh-work-items", ars => {
-    // TODO
-    vscode.window.showInformationMessage("Refresh work items list");
+    vscode.window.createTreeView("work-items", {
+      treeDataProvider: new WorkItemTreeNodeProvider()
+    });
+
+    //vscode.window.showInformationMessage("Refresh work items list");
   });
 
   vscode.commands.registerCommand("azure-boards.prefill", workItemId => {
