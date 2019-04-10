@@ -4,8 +4,10 @@ import { WorkItemTreeNodeProvider } from "./workitem.tree";
 
 export function registerCommands() {
   vscode.commands.registerCommand("azure-boards.open-work-item", ars => {
-    // TODO
-    vscode.window.showInformationMessage("Open work item!");
+    vscode.commands.executeCommand(
+      "vscode.open",
+      vscode.Uri.parse(ars.editUrl)
+    );
   });
 
   vscode.commands.registerCommand("azure-boards.refresh-work-items", ars => {

@@ -21,7 +21,7 @@ export class WorkItemComposite {
   public readonly workItemType: string = "";
   public readonly workItemId: string = "";
   public readonly workItemTitle: string = "";
-  public readonly workItemUrl: string = "";
+  public readonly workItemIcon: string = "";
 
   constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
     this.workItemType = workItem.fields
@@ -34,6 +34,6 @@ export class WorkItemComposite {
     //seems like there should be a better way of doing this?
     let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
 
-    this.workItemUrl = workItemTypeIcons[i].url.toString();
+    this.workItemIcon = workItemTypeIcons[i].url.toString();
   }
 }
