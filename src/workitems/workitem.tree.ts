@@ -112,13 +112,23 @@ export class WorkItemNode extends TreeNodeParent {
   public readonly workItemId: number;
   public readonly workItemType: string;
   public readonly iconPath: vscode.Uri;
+  public readonly editUrl: string;
 
   constructor(workItemComposite: WorkItemComposite) {
     super(`${workItemComposite.workItemId} ${workItemComposite.workItemTitle}`);
 
-    this.iconPath = vscode.Uri.parse(workItemComposite.workItemUrl);
+    //build url that can be used later to browse directly to the work item
+    const url: string =
+      "https://dev.azure.com/" +
+      getOrg() +
+      "/" +
+      getProject() +
+      "/_workitems/edit/";
+
+    this.iconPath = vscode.Uri.parse(workItemComposite.workItemIcon);
     this.workItemId = +workItemComposite.workItemId;
     this.workItemType = workItemComposite.workItemType;
+    this.editUrl = url + this.workItemId.toString(); //append work item id to url
 
     this.contextValue = "work-item";
 
