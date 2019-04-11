@@ -22,7 +22,7 @@ export class MyWorkProvider {
 
   async getMyWorkItems(type: string): Promise<WorkItem[]> {
     const client = this._api.rest.client;
-    const url = this._baseUrl + type;
+    const url = this._baseUrl + type + "?$top=50&includeCompleted= false";
 
     const res: IHttpClientResponse = await client.get(url); //needed to call basic client api
     const witApi = await this._api.getWorkItemTrackingApi(); //needed to call wit api
