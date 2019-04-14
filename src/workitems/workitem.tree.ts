@@ -2,12 +2,15 @@ import * as DevOpsClient from "azure-devops-node-api";
 import * as vscode from "vscode";
 import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
+import { IConnection } from "src/connection/connection";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
   private _onDidChangeTreeData: vscode.EventEmitter<
     TreeNodeParent | undefined
   > = new vscode.EventEmitter<TreeNodeParent | undefined>();
+
+  constructor(private connection: IConnection) {}
 
   readonly onDidChangeTreeData: vscode.Event<TreeNodeParent | undefined> = this
     ._onDidChangeTreeData.event;
@@ -17,10 +20,14 @@ export class WorkItemTreeNodeProvider
   ): vscode.ProviderResult<TreeNodeParent[]> {
     if (!element) {
       return [
-        new TreeNodeChildWorkItem("Assigned to me", "AssignedToMe"),
-        new TreeNodeChildWorkItem("My activity", "MyActivity"),
-        new TreeNodeChildWorkItem("Mentioned", "Mentioned"),
-        new TreeNodeChildWorkItem("Following", "Following")
+        new TreeNodeChildWorkItem(
+          this.connection,
+          "Assigned to me",
+          "AssignedToMe"
+        ),
+        new TreeNodeChildWorkItem(this.connection, "My activity", "MyActivity"),
+        new TreeNodeChildWorkItem(this.connection, "Mentioned", "Mentioned"),
+        new TreeNodeChildWorkItem(this.connection, "Following", "Following")
       ];
     }
 
@@ -32,6 +39,11 @@ export class WorkItemTreeNodeProvider
   ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
+
+  refresh(): void {
+    // Cause view to refresh
+    this._onDidChangeTreeData.fire();
+  }
 }
 
 export class TreeNodeParent extends vscode.TreeItem {
@@ -41,7 +53,6 @@ export class TreeNodeParent extends vscode.TreeItem {
       .TreeItemCollapsibleState.None
   ) {
     super(label, collapsibleState);
-
     this.iconPath = vscode.ThemeIcon.File;
   }
 
@@ -51,32 +62,29 @@ export class TreeNodeParent extends vscode.TreeItem {
 }
 
 export class TreeNodeChildWorkItem extends TreeNodeParent {
-  constructor(label: string, private readonly type: string) {
+  constructor(
+    private readonly connection: IConnection,
+    label: string,
+    private readonly type: string
+  ) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
   }
 
   async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
     try {
-      const token = getToken();
-      const org = getOrg();
-      const orgUrl = "https://dev.azure.com/" + org;
-      const project = getProject();
-
-      //build the devops web api to be used in other calls
-      const handler = DevOpsClient.getHandlerFromToken(token);
-      const api = new DevOpsClient.WebApi(orgUrl, handler);
-
       //go get the work items from the mywork provider
       const myWorkProvider: MyWorkProvider = new MyWorkProvider(
-        org,
-        project,
-        api
+        this.connection
       );
 
       const workitems = await myWorkProvider.getMyWorkItems(this.type);
 
       //get the list of work item types for the project
-      const workItemTypeIcons = await this.getWorkItemTypeIcons(api, project);
+      const api = this.connection.getWebApi();
+      const workItemTypeIcons = await this.getWorkItemTypeIcons(
+        api,
+        this.connection.getProject()
+      );
 
       //map up work items from search results and the icons into the
       //workitemcomposite object
@@ -86,6 +94,7 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
 
       return workItemList.map(wi => new WorkItemNode(wi));
     } catch (e) {
+      // TODO: Handle error correctly
       console.error(e);
     }
 
@@ -109,6 +118,8 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
 }
 
 export class WorkItemNode extends TreeNodeParent {
+  static contextValue = "work-item";
+
   public readonly workItemId: number;
   public readonly workItemType: string;
   public readonly iconPath: vscode.Uri;
@@ -117,20 +128,10 @@ export class WorkItemNode extends TreeNodeParent {
   constructor(workItemComposite: WorkItemComposite) {
     super(`${workItemComposite.workItemId} ${workItemComposite.workItemTitle}`);
 
-    //build url that can be used later to browse directly to the work item
-    const url: string =
-      "https://dev.azure.com/" +
-      getOrg() +
-      "/" +
-      getProject() +
-      "/_workitems/edit/";
-
     this.iconPath = vscode.Uri.parse(workItemComposite.workItemIcon);
     this.workItemId = +workItemComposite.workItemId;
     this.workItemType = workItemComposite.workItemType;
-    this.editUrl = url + this.workItemId.toString(); //append work item id to url
-
-    this.contextValue = "work-item";
+    this.editUrl = workItemComposite.url;
 
     this.command = {
       command: "azure-boards.prefill",
@@ -138,16 +139,4 @@ export class WorkItemNode extends TreeNodeParent {
       title: "Prefill commit message"
     };
   }
-}
-
-function getToken(): string {
-  return "6krvvgluyu5kdydywm5ywvgh7sdt3wmo624cpcod7igks3cl7noa";
-}
-
-function getProject(): string {
-  return "VSCodeTest";
-}
-
-function getOrg(): string {
-  return "basicprocess";
 }

@@ -18,10 +18,12 @@ export class WorkItemTypeIcon {
 }
 
 export class WorkItemComposite {
-  public readonly workItemType: string = "";
-  public readonly workItemId: string = "";
-  public readonly workItemTitle: string = "";
-  public readonly workItemIcon: string = "";
+  public readonly workItemType: string;
+  public readonly workItemId: string;
+  public readonly workItemTitle: string;
+  public readonly workItemIcon: string;
+
+  public readonly url: string;
 
   constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
     this.workItemType = workItem.fields
@@ -35,5 +37,7 @@ export class WorkItemComposite {
     let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
 
     this.workItemIcon = workItemTypeIcons[i].url.toString();
+
+    this.url = workItem._links.html.href;
   }
 }

@@ -1,19 +1,36 @@
-"use strict";
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { registerCommands } from "./workitems/commands";
+import { Commands, registerGlobalCommands } from "./commands/commands";
+import { AzureBoardsConnection, IConnection } from "./connection/connection";
 import { WorkItemTreeNodeProvider } from "./workitems/workitem.tree";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  vscode.window.createTreeView("work-items", {
-    treeDataProvider: new WorkItemTreeNodeProvider()
-  });
+  // Create Azure Boards connection object
+  const connection = new AzureBoardsConnection();
+  context.subscriptions.push(connection);
 
-  registerCommands();
+  registerTreeView(context, connection);
+
+  registerGlobalCommands(context);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+/**
+ * Register work items tree view
+ */
+export function registerTreeView(
+  context: vscode.ExtensionContext,
+  connection: IConnection
+): void {
+  const treeDataProvider = new WorkItemTreeNodeProvider(connection);
+
+  context.subscriptions.push(
+    vscode.window.createTreeView("work-items", {
+      treeDataProvider
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(Commands.WorkItemsRefresh, () => {
+      treeDataProvider.refresh();
+    })
+  );
+}
