@@ -24,7 +24,14 @@ export function registerCommands() {
     );
     if (gitExtension) {
       const git = gitExtension.exports.getAPI(1);
-      git.repositories[0].inputBox.value = `Fix #${workItemId}`;
+      const existingCommitMessage: string = git.repositories[0].inputBox.value;
+      let prefillText: string = ``;
+      if (existingCommitMessage) {
+        prefillText = `\n` + `Fixes #${workItemId}`;
+      } else {
+        prefillText = `Fix #${workItemId} `;
+      }
+      git.repositories[0].inputBox.value += prefillText;
       vscode.commands.executeCommand("workbench.view.scm");
     }
   });
