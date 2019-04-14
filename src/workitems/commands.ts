@@ -25,6 +25,7 @@ export function registerCommands() {
     if (gitExtension) {
       const git = gitExtension.exports.getAPI(1);
       git.repositories[0].inputBox.value = `Fix #${workItemId}`;
+      vscode.commands.executeCommand("workbench.view.scm");
     }
   });
 }
