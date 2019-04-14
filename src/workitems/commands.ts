@@ -18,21 +18,25 @@ export function registerCommands() {
     //vscode.window.showInformationMessage("Refresh work items list");
   });
 
-  vscode.commands.registerCommand("azure-boards.prefill", workItemId => {
-    const gitExtension = vscode.extensions.getExtension<GitExtension>(
-      "vscode.git"
-    );
-    if (gitExtension) {
-      const git = gitExtension.exports.getAPI(1);
-      const existingCommitMessage: string = git.repositories[0].inputBox.value;
-      let prefillText: string = ``;
-      if (existingCommitMessage) {
-        prefillText = `\n` + `Fixes #${workItemId}`;
-      } else {
-        prefillText = `Fix #${workItemId} `;
+  vscode.commands.registerCommand(
+    "azure-boards.mention-work-item",
+    workItemId => {
+      const gitExtension = vscode.extensions.getExtension<GitExtension>(
+        "vscode.git"
+      );
+      if (gitExtension) {
+        const git = gitExtension.exports.getAPI(1);
+        const existingCommitMessage: string =
+          git.repositories[0].inputBox.value;
+        let mentionText: string = ``;
+        if (existingCommitMessage) {
+          mentionText = `\n` + `Fixes #${workItemId}`;
+        } else {
+          mentionText = `Fix #${workItemId} `;
+        }
+        git.repositories[0].inputBox.value += mentionText;
+        vscode.commands.executeCommand("workbench.view.scm");
       }
-      git.repositories[0].inputBox.value += prefillText;
-      vscode.commands.executeCommand("workbench.view.scm");
     }
-  });
+  );
 }
