@@ -133,9 +133,9 @@ export class WorkItemNode extends TreeNodeParent {
     this.contextValue = "work-item";
 
     this.command = {
-      command: "azure-boards.prefill",
+      command: "azure-boards.mention-work-item",
       arguments: [this.workItemId],
-      title: "Prefill commit message"
+      title: "Mention work item in commit message"
     };
   }
 }

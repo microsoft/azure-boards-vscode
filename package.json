@@ -50,7 +50,15 @@
       },
       {
         "command": "azure-boards.open-work-item",
-        "title": "Open work item"
+        "title": "Open work item in Azure Boards"
+      },
+      {
+        "command": "azure-boards.mention-work-item",
+        "title": "Mention work item in commit message",
+        "icon": {
+          "light": "resources/light/stage.svg",
+          "dark": "resources/dark/stage.svg"
+        }
       }
     ],
     "menus": {
@@ -65,6 +73,11 @@
         {
           "command": "azure-boards.open-work-item",
           "when": "view == work-items && viewItem == work-item"
+        },
+        {
+          "command": "azure-boards.mention-work-item",
+          "when": "view == work-items && viewItem == work-item",
+          "group": "inline"
         }
       ]
     },
