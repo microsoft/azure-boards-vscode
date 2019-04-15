@@ -37,8 +37,8 @@
     },
     "commands": [
       {
-        "command": "azure-boards.configuration.show",
-        "title": "Configure Azure Boards"
+        "command": "azure-boards.settings.show",
+        "title": "Azure Boards: Open settings"
       },
       {
         "command": "azure-boards.refresh-work-items",
@@ -75,31 +75,12 @@
         "azure-boards.account": {
           "type": "object",
           "properties": {
-            "name": {
+            "url": {
               "type": "string",
               "default": ""
-            },
-            "id": {
-              "type": "string",
-              "default": ""
-            },
-            "scopes": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "uniqueItems": true
-            },
-            "avatarUrl": {
-              "type": "string",
-              "default": ""
-            },
-            "baseUrlSuffix": {
-              "type": "string",
-              "default": "atlassian.net"
             }
           },
-          "description": "Jira site for workspace",
+          "description": "Azure Boards account to connect to",
           "scope": "resource"
         },
         "azure-boards.project": {
@@ -118,7 +99,7 @@
               "default": ""
             }
           },
-          "description": "Jira project for workspace",
+          "description": "",
           "scope": "resource"
         }
       }
