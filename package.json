@@ -50,7 +50,7 @@
       },
       {
         "command": "azure-boards.open-work-item",
-        "title": "Open work item in browser"
+        "title": "Open work item in Azure Boards"
       },
       {
         "command": "azure-boards.mention-work-item",
