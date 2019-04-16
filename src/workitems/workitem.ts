@@ -19,25 +19,32 @@ export class WorkItemTypeIcon {
 
 export class WorkItemComposite {
   public readonly workItemType: string;
-  public readonly workItemId: string;
+  public readonly workItemId: number;
   public readonly workItemTitle: string;
   public readonly workItemIcon: string;
 
   public readonly url: string;
 
-  constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
-    this.workItemType = workItem.fields
-      ? workItem.fields["System.WorkItemType"]
+  constructor(
+    id: number,
+    workItems: WorkItem[],
+    workItemTypeIcons: WorkItemTypeIcon[]
+  ) {
+    //get the index of the work item
+    let x = workItems.findIndex(x => x.id === id);
+
+    this.workItemType = workItems[x].fields
+      ? workItems[x].fields["System.WorkItemType"]
       : "";
-    this.workItemId = workItem.fields ? workItem.fields["System.Id"] : -1;
-    this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
+    this.workItemId = id ? id : -1;
+    this.workItemTitle = workItems[x].fields
+      ? workItems[x].fields["System.Title"]
+      : "";
 
     //get index of icon from list of avaible icons for the work item type
-    //seems like there should be a better way of doing this?
     let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
 
     this.workItemIcon = workItemTypeIcons[i].url.toString();
-
-    this.url = workItem._links.html.href;
+    this.url = workItems[x]._links.html.href;
   }
 }
