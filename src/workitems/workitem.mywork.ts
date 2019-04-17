@@ -1,5 +1,8 @@
 import { IHttpClientResponse } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
-import { WorkItemExpand } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
+import {
+  WorkItemExpand,
+  WorkItem
+} from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
 import { IConnection } from "src/connection/connection";
 
@@ -34,21 +37,30 @@ export class MyWorkProvider {
         : [];
 
     //get id's
-    let workItemIds =
+    const workItemIds =
       myWorkResponse.results !== null
         ? myWorkResponse.results.map(x => x.id)
         : [];
 
     //get work items from id's
-    let workItems = await witApi.getWorkItems(
+    const workItems: WorkItem[] = await witApi.getWorkItems(
       workItemIds,
       ["System.Id", "System.Title", "System.WorkItemType"],
       undefined,
       WorkItemExpand.Links
     );
 
-    //mash all together
-    return workItemIds.map(wi => new WorkItemComposite(wi, workItems, icons));
+    //loop through work items list and map it to temp map collection
+    const workItemsMap: { [workItemId: number]: WorkItem } = {};
+    workItems.forEach(wi => (workItemsMap[wi.id ? wi.id : -1] = wi));
+
+    //set the order of workitems to match that of returned id's
+    const orderedWorkItems: WorkItem[] = workItemIds.map(
+      workItemId => workItemsMap[workItemId]
+    );
+
+    //map orderedWorkItems into our composite to include the right icon
+    return orderedWorkItems.map(wi => new WorkItemComposite(wi, icons));
   }
 }
 

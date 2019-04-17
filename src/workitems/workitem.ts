@@ -25,26 +25,17 @@ export class WorkItemComposite {
 
   public readonly url: string;
 
-  constructor(
-    id: number,
-    workItems: WorkItem[],
-    workItemTypeIcons: WorkItemTypeIcon[]
-  ) {
-    //get the index of the work item
-    let x = workItems.findIndex(x => x.id === id);
-
-    this.workItemType = workItems[x].fields
-      ? workItems[x].fields["System.WorkItemType"]
+  constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
+    this.workItemType = workItem.fields
+      ? workItem.fields["System.WorkItemType"]
       : "";
-    this.workItemId = id ? id : -1;
-    this.workItemTitle = workItems[x].fields
-      ? workItems[x].fields["System.Title"]
-      : "";
+    this.workItemId = workItem.fields ? workItem.fields["System.Id"] : -1;
+    this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
     //get index of icon from list of avaible icons for the work item type
     let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
 
     this.workItemIcon = workItemTypeIcons[i].url.toString();
-    this.url = workItems[x]._links.html.href;
+    this.url = workItem._links.html.href;
   }
 }
