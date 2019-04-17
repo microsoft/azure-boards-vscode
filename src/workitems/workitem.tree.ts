@@ -1,6 +1,5 @@
-import * as DevOpsClient from "azure-devops-node-api";
 import * as vscode from "vscode";
-import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
+import { WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
 import { IConnection } from "src/connection/connection";
 
@@ -77,43 +76,16 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
         this.connection
       );
 
-      const workitems = await myWorkProvider.getMyWorkItems(this.type);
+      //get mashed list of workitems from the myworkprovider
+      const workItems = await myWorkProvider.getMyWorkItems(this.type);
 
-      //get the list of work item types for the project
-      const api = this.connection.getWebApi();
-      const workItemTypeIcons = await this.getWorkItemTypeIcons(
-        api,
-        this.connection.getProject()
-      );
-
-      //map up work items from search results and the icons into the
-      //workitemcomposite object
-      const workItemList = workitems.map(
-        wi => new WorkItemComposite(wi, workItemTypeIcons)
-      );
-
-      return workItemList.map(wi => new WorkItemNode(wi));
+      return workItems.map(wi => new WorkItemNode(wi));
     } catch (e) {
       // TODO: Handle error correctly
       console.error(e);
     }
 
     return [];
-  }
-
-  async getWorkItemTypeIcons(
-    api: DevOpsClient.WebApi,
-    project: string
-  ): Promise<(WorkItemTypeIcon)[]> {
-    const witApi = await api.getWorkItemTrackingApi();
-    const workItemTypes = await witApi.getWorkItemTypes(project);
-
-    const icons =
-      workItemTypes !== null
-        ? workItemTypes.map(x => new WorkItemTypeIcon(x))
-        : [];
-
-    return icons;
   }
 }
 
