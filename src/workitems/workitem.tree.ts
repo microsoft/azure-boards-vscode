@@ -90,8 +90,6 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
 }
 
 export class WorkItemNode extends TreeNodeParent {
-  static contextValue = "work-item";
-
   public readonly workItemId: number;
   public readonly workItemType: string;
   public readonly iconPath: vscode.Uri;
@@ -104,6 +102,7 @@ export class WorkItemNode extends TreeNodeParent {
     this.workItemId = +workItemComposite.workItemId;
     this.workItemType = workItemComposite.workItemType;
     this.editUrl = workItemComposite.url;
+    this.contextValue = "work-item";
 
     this.command = {
       command: "azure-boards.mention-work-item",
