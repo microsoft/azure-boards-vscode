@@ -103,11 +103,12 @@ export class WorkItemNode extends TreeNodeParent {
     this.workItemType = workItemComposite.workItemType;
     this.editUrl = workItemComposite.url;
     this.contextValue = "work-item";
+    this.tooltip = "Open work item in Azure Boards";
 
     this.command = {
-      command: "azure-boards.mention-work-item",
-      arguments: [this.workItemId],
-      title: "Mention work item in commit message"
+      command: "azure-boards.open-work-item",
+      arguments: [this.editUrl],
+      title: "Open work item in Azure Boards"
     };
   }
 }

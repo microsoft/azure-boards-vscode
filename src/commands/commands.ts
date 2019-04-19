@@ -5,26 +5,21 @@ import { BaseReactPanel } from "../webviews/webview";
 
 export const enum Commands {
   WorkItemOpen = "azure-boards.open-work-item",
-
   WorkItemsRefresh = "azure-boards.refresh-work-items",
-
   WorkItemMention = "azure-boards.mention-work-item",
-
   SettingsShow = "azure-boards.settings.show"
 }
 
 export function registerGlobalCommands(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(Commands.WorkItemOpen, args => {
-      vscode.commands.executeCommand(
-        "vscode.open",
-        vscode.Uri.parse(args.editUrl)
-      );
+      const editUrl = args.editUrl || args;
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(editUrl));
     })
   );
 
   vscode.commands.registerCommand(Commands.WorkItemMention, args => {
-    const workItemId = args.workItemId | args;
+    const workItemId = args.workItemId || args;
     const gitExtension = vscode.extensions.getExtension<GitExtension>(
       "vscode.git"
     );
