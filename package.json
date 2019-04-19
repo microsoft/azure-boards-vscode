@@ -71,12 +71,8 @@
       ],
       "view/item/context": [
         {
-          "command": "azure-boards.open-work-item",
-          "when": "view == work-items && viewItem == work-item"
-        },
-        {
           "command": "azure-boards.mention-work-item",
-          "when": "view == work-items && viewItem == work-item",
+          "when": "view == work-items && viewItem == work-item && config.git.enabled && gitOpenRepositoryCount != 0",
           "group": "inline"
         }
       ]
