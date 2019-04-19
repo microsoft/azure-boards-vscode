@@ -81,8 +81,8 @@
         },
         {
           "command": "azure-boards.mention-work-item",
-          "when": "view == work-items && viewItem == work-item",
-          "group": "inline"
+          "when": "view == work-items && viewItem == work-item && config.git.enabled && gitOpenRepositoryCount != 0",
+          "group": "inline@+1"
         }
       ]
     },
