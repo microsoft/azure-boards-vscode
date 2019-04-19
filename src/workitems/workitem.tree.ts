@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
 import { IConnection } from "src/connection/connection";
+import { Commands } from "src/commands/commands";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
@@ -106,7 +107,7 @@ export class WorkItemNode extends TreeNodeParent {
     this.tooltip = "Open work item in Azure Boards";
 
     this.command = {
-      command: "azure-boards.open-work-item",
+      command: Commands.WorkItemOpen,
       arguments: [this.editUrl],
       title: "Open work item in Azure Boards"
     };
