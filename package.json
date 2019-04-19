@@ -50,7 +50,11 @@
       },
       {
         "command": "azure-boards.open-work-item",
-        "title": "Open work item in Azure Boards"
+        "title": "Open work item in Azure Boards",
+        "icon": {
+          "light": "resources/light/pencil.svg",
+          "dark": "resources/dark/pencil.svg"
+        }
       },
       {
         "command": "azure-boards.mention-work-item",
@@ -72,7 +76,8 @@
       "view/item/context": [
         {
           "command": "azure-boards.open-work-item",
-          "when": "view == work-items && viewItem == work-item"
+          "when": "view == work-items && viewItem == work-item",
+          "group": "inline"
         },
         {
           "command": "azure-boards.mention-work-item",
