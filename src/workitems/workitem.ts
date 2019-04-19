@@ -19,7 +19,7 @@ export class WorkItemTypeIcon {
 
 export class WorkItemComposite {
   public readonly workItemType: string;
-  public readonly workItemId: string;
+  public readonly workItemId: number;
   public readonly workItemTitle: string;
   public readonly workItemIcon: string;
 
@@ -33,11 +33,9 @@ export class WorkItemComposite {
     this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
     //get index of icon from list of avaible icons for the work item type
-    //seems like there should be a better way of doing this?
     let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
 
     this.workItemIcon = workItemTypeIcons[i].url.toString();
-
     this.url = workItem._links.html.href;
   }
 }
