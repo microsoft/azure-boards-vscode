@@ -1,7 +1,11 @@
 import * as DevOpsClient from "azure-devops-node-api";
+import {
+  WorkItemTypeProvider
+} from "../workitems/workitem.icons";
 
 export interface IConnection {
   authToken: string;
+  workItemProvider: WorkItemTypeProvider | null;
 
   getWebApi(): DevOpsClient.WebApi;
 
@@ -11,9 +15,11 @@ export interface IConnection {
 }
 
 export class AzureBoardsConnection implements IConnection {
-  constructor() {}
+  private _workItemProvider: WorkItemTypeProvider | undefined;
 
-  dispose() {}
+  constructor() { }
+
+  dispose() { }
 
   get isAuthenticated(): boolean {
     return false;
@@ -37,5 +43,13 @@ export class AzureBoardsConnection implements IConnection {
 
   getOrgUrl(): string {
     return "https://dev.azure.com/basicprocess";
+  }
+
+  get workItemProvider(): WorkItemTypeProvider {
+    if (this._workItemProvider === undefined) {
+      this._workItemProvider = new WorkItemTypeProvider(this);
+    }
+
+    return this._workItemProvider;
   }
 }
