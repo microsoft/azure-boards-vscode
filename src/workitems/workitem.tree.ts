@@ -53,7 +53,6 @@ export class TreeNodeParent extends vscode.TreeItem {
       .TreeItemCollapsibleState.None
   ) {
     super(label, collapsibleState);
-    this.iconPath = vscode.ThemeIcon.File;
   }
 
   async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
