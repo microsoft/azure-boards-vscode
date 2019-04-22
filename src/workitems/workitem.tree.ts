@@ -19,6 +19,10 @@ export class WorkItemTreeNodeProvider
     element?: TreeNodeParent | undefined
   ): vscode.ProviderResult<TreeNodeParent[]> {
     if (!element) {
+      if (!this.connection.isConnectionConfigured()) {
+        return [new NoConnectionNode()];
+      }
+
       return [
         new TreeNodeChildWorkItem(
           this.connection,
@@ -58,6 +62,14 @@ export class TreeNodeParent extends vscode.TreeItem {
 
   async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
     return [];
+  }
+}
+
+class NoConnectionNode extends TreeNodeParent {
+  constructor() {
+    super("No connection, please connect to Azure Boards");
+
+    this.contextValue = "no-connection";
   }
 }
 

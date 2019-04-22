@@ -1,6 +1,8 @@
 import * as DevOpsClient from "azure-devops-node-api";
 
 export interface IConnection {
+  isConnectionConfigured(): boolean;
+
   authToken: string;
 
   getWebApi(): DevOpsClient.WebApi;
@@ -14,6 +16,10 @@ export class AzureBoardsConnection implements IConnection {
   constructor() {}
 
   dispose() {}
+
+  isConnectionConfigured() {
+    return false;
+  }
 
   get isAuthenticated(): boolean {
     return false;
