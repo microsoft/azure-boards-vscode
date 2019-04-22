@@ -1,21 +1,5 @@
-import {
-  WorkItemType,
-  WorkItem
-} from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
-
-export class WorkItemTypeIcon {
-  public readonly type: string = "";
-  public readonly icon: string = "";
-  public readonly url: string = "";
-
-  constructor(workItemType: WorkItemType) {
-    this.type = workItemType.name ? workItemType.name : "";
-    this.icon =
-      workItemType.icon && workItemType.icon.id ? workItemType.icon.id : "";
-    this.url =
-      workItemType.icon && workItemType.icon.url ? workItemType.icon.url : "";
-  }
-}
+import { WorkItem } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
+import { WorkItemTypeIcon } from "./workitem.icons";
 
 export class WorkItemComposite {
   public readonly workItemType: string;
