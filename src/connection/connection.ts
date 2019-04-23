@@ -1,6 +1,5 @@
 import * as DevOpsClient from "azure-devops-node-api";
 import {
-  WorkItemTypeIcon,
   WorkItemTypeProvider
 } from "../workitems/workitem.icons";
 
@@ -13,18 +12,14 @@ export interface IConnection {
   getProject(): string;
 
   getOrgUrl(): string;
-
-  getWorkItemIcons(project: string): Promise<WorkItemTypeIcon[]>;
 }
 
 export class AzureBoardsConnection implements IConnection {
-  private _workItemProvider: WorkItemTypeProvider | null;
+  private _workItemProvider: WorkItemTypeProvider | undefined;
 
-  constructor() {
-    this._workItemProvider = null;
-  }
+  constructor() { }
 
-  dispose() {}
+  dispose() { }
 
   get isAuthenticated(): boolean {
     return false;
@@ -50,22 +45,8 @@ export class AzureBoardsConnection implements IConnection {
     return "https://dev.azure.com/basicprocess";
   }
 
-  async getWorkItemIcons(project: string): Promise<WorkItemTypeIcon[]> {
-    const witApi = await this.getWebApi().getWorkItemTrackingApi();
-
-    //get icons
-    const workItemTypes = await witApi.getWorkItemTypes(project);
-
-    const icons =
-      workItemTypes !== null
-        ? workItemTypes.map(x => new WorkItemTypeIcon(x))
-        : [];
-
-    return icons;
-  }
-
   get workItemProvider(): WorkItemTypeProvider {
-    if (this._workItemProvider === null) {
+    if (this._workItemProvider === undefined) {
       this._workItemProvider = new WorkItemTypeProvider(this);
     }
 
