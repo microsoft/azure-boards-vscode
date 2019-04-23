@@ -1,10 +1,22 @@
 import { IConnection } from "src/connection/connection";
 import { WorkItemType } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 
-export class WorkitemTypeIcons {
-  constructor(private readonly connection: IConnection) {}
+export class WorkItemTypeProvider {
+  private _iconPromise: Promise<WorkItemTypeIcon[]> | [];
 
-  async getIcons(): Promise<WorkItemTypeIcon[]> {
+  constructor(private readonly connection: IConnection) {
+    this._iconPromise = this._getIcons();
+  }
+
+  public async getIcons(): Promise<WorkItemTypeIcon[]> {
+    if (!this._iconPromise) {
+      this._iconPromise = this._getIcons();
+    }
+
+    return this._iconPromise;
+  }
+
+  private async _getIcons(): Promise<WorkItemTypeIcon[]> {
     const project = this.connection.getProject();
     const witApi = await this.connection.getWebApi().getWorkItemTrackingApi(); //needed to call wit api
 

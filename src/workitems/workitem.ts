@@ -6,10 +6,15 @@ export class WorkItemComposite {
   public readonly workItemId: number;
   public readonly workItemTitle: string;
   public readonly workItemIcon: string;
-
   public readonly url: string;
 
-  constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
+  private readonly _fallBackIconUrl =
+    "https://tfsprodcus3.visualstudio.com/_apis/wit/workItemIcons/icon_book?color=009CCC&v=2";
+
+  constructor(
+    workItem: WorkItem,
+    workItemTypeIcons: WorkItemTypeIcon[] | null
+  ) {
     this.workItemType = workItem.fields
       ? workItem.fields["System.WorkItemType"]
       : "";
@@ -17,9 +22,13 @@ export class WorkItemComposite {
     this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
     //get index of icon from list of avaible icons for the work item type
-    let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
+    let i = workItemTypeIcons
+      ? workItemTypeIcons.findIndex(x => x.type === this.workItemType)
+      : 0;
 
-    this.workItemIcon = workItemTypeIcons[i].url.toString();
+    this.workItemIcon = workItemTypeIcons
+      ? workItemTypeIcons[i].url.toString()
+      : this._fallBackIconUrl;
     this.url = workItem._links.html.href;
   }
 }

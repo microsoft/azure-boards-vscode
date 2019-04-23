@@ -5,16 +5,17 @@ import {
 } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 import { WorkItemComposite } from "./workitem";
 import { IConnection } from "src/connection/connection";
-import { WorkitemTypeIcons } from "./workitem.icons";
 
 export class MyWorkProvider {
   private _baseUrl: string;
+  private _project: string;
 
   constructor(private readonly connection: IConnection) {
+    this._project = this.connection.getProject();
     this._baseUrl =
       this.connection.getOrgUrl() +
       "/" +
-      this.connection.getProject() +
+      this._project +
       "/_apis/work/predefinedQueries/";
   }
 
@@ -28,8 +29,9 @@ export class MyWorkProvider {
     const body: string = await res.readBody();
     const myWorkResponse: IMyWorkResponse = JSON.parse(body);
 
-    const workItemTypeIcons = new WorkitemTypeIcons(this.connection);
-    const icons = await workItemTypeIcons.getIcons();
+    //get work item icons from work item provider on connectionn object
+    const workItemProvider = this.connection.workItemProvider;
+    const icons = workItemProvider ? await workItemProvider.getIcons() : null;
 
     //get id's
     const workItemIds =
