@@ -1,31 +1,20 @@
-import {
-  WorkItemType,
-  WorkItem
-} from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
-
-export class WorkItemTypeIcon {
-  public readonly type: string = "";
-  public readonly icon: string = "";
-  public readonly url: string = "";
-
-  constructor(workItemType: WorkItemType) {
-    this.type = workItemType.name ? workItemType.name : "";
-    this.icon =
-      workItemType.icon && workItemType.icon.id ? workItemType.icon.id : "";
-    this.url =
-      workItemType.icon && workItemType.icon.url ? workItemType.icon.url : "";
-  }
-}
+import { WorkItem } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
+import { WorkItemTypeIcon } from "./workitem.icons";
 
 export class WorkItemComposite {
   public readonly workItemType: string;
   public readonly workItemId: number;
   public readonly workItemTitle: string;
   public readonly workItemIcon: string;
-
   public readonly url: string;
 
-  constructor(workItem: WorkItem, workItemTypeIcons: WorkItemTypeIcon[]) {
+  private readonly _fallBackIconUrl =
+    "https://tfsprodcus3.visualstudio.com/_apis/wit/workItemIcons/icon_book?color=009CCC&v=2";
+
+  constructor(
+    workItem: WorkItem,
+    workItemTypeIcons: WorkItemTypeIcon[] | null
+  ) {
     this.workItemType = workItem.fields
       ? workItem.fields["System.WorkItemType"]
       : "";
@@ -33,9 +22,13 @@ export class WorkItemComposite {
     this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
     //get index of icon from list of avaible icons for the work item type
-    let i = workItemTypeIcons.findIndex(x => x.type === this.workItemType);
+    let i = workItemTypeIcons
+      ? workItemTypeIcons.findIndex(x => x.type === this.workItemType)
+      : 0;
 
-    this.workItemIcon = workItemTypeIcons[i].url.toString();
+    this.workItemIcon = workItemTypeIcons
+      ? workItemTypeIcons[i].url.toString()
+      : this._fallBackIconUrl;
     this.url = workItem._links.html.href;
   }
 }
