@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { Commands, registerGlobalCommands } from "./commands/commands";
 import { AzureBoardsConnection, IConnection } from "./connection/connection";
 import { WorkItemTreeNodeProvider } from "./workitems/workitem.tree";
+import { registerConfigurationCommands } from "./configuration/commands";
 
 export function activate(context: vscode.ExtensionContext) {
   // Create Azure Boards connection object
@@ -11,6 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
   registerTreeView(context, connection);
 
   registerGlobalCommands(context);
+
+  registerConfigurationCommands(context);
 }
 
 /**

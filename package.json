@@ -63,6 +63,10 @@
           "light": "resources/light/stage.svg",
           "dark": "resources/dark/stage.svg"
         }
+      },
+      {
+        "command": "azure-boards.add-account",
+        "title": "Azure Boards: Connect to an account"
       }
     ],
     "menus": {
@@ -90,35 +94,20 @@
       "type": "object",
       "title": "Azure Boards",
       "properties": {
-        "azure-boards.account": {
-          "type": "object",
+        "azure-boards.preferred-account": {
+          "description": "Current preferred Azure Boards account",
+          "scope": "application"
+        },
+        "azure-boards.accounts": {
+          "type": "array",
           "properties": {
             "url": {
               "type": "string",
               "default": ""
             }
           },
-          "description": "Azure Boards account to connect to",
-          "scope": "resource"
-        },
-        "azure-boards.project": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "default": ""
-            },
-            "id": {
-              "type": "string",
-              "default": ""
-            },
-            "key": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          "description": "",
-          "scope": "resource"
+          "description": "Azure Boards accounts to connect to",
+          "scope": "application"
         }
       }
     }
@@ -131,6 +120,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
+    "@types/keytar": "^4.4.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
     "@types/react": "^16.8.13",
@@ -141,6 +131,7 @@
   },
   "dependencies": {
     "azure-devops-node-api": "^7.0.0",
+    "keytar": "^4.6.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts-ts": "^3.1.0"
