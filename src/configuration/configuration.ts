@@ -5,14 +5,15 @@ export interface IAccount {
 }
 
 export interface IConfiguration {
-  preferredAccount: IAccount | undefined;
+  currentAccount: IAccount | undefined;
+  currentProject: IProject | undefined;
 
   accounts: IAccount[];
 }
 
 export interface IProject {
-  id?: string;
-  name?: string;
+  id: string;
+  name: string;
 }
 
 const ConfigKey = "azure-boards";
@@ -21,16 +22,21 @@ function getConfig(): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration(ConfigKey);
 }
 
-export function getConfiguration(): IConfiguration | undefined {
+export function getConfiguration(): IConfiguration {
   const config = getConfig();
 
   return {
     accounts: config.get("accounts", []),
-    preferredAccount: config.get("preferred-account", undefined)
+    currentAccount: config.get("current-account", undefined),
+    currentProject: config.get("current-project", undefined)
   };
 }
 
-export function addAccount(account: IAccount): void {
+/**
+ * Add a new account
+ * @param account
+ */
+export async function addAccount(account: IAccount): Promise<void> {
   const config = getConfig();
 
   let accounts: IAccount[] = [];
@@ -40,9 +46,33 @@ export function addAccount(account: IAccount): void {
 
   accounts.push(account);
 
-  config.update("accounts", accounts);
+  await config.update("accounts", accounts, vscode.ConfigurationTarget.Global);
 }
 
-export function setPreferredAccount(account: IAccount): void {
-  getConfig().update("preferred-acount", account);
+/**
+ * Set the current account
+ */
+export async function setCurrentAccount(account: IAccount): Promise<void> {
+  await getConfig().update("current-account", account);
+}
+
+/**
+ * Get the current account
+ */
+export function getCurrentAccount(): IAccount | undefined {
+  return getConfiguration().currentAccount;
+}
+
+/**
+ * Set the current account
+ */
+export async function setCurrentProject(project: IProject): Promise<void> {
+  await getConfig().update("current-project", project);
+}
+
+/**
+ * Get the current account
+ */
+export function getCurrentProject(): IProject | undefined {
+  return getConfiguration().currentProject;
 }

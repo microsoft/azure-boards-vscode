@@ -4,6 +4,9 @@
   "description": "",
   "version": "0.0.1",
   "publisher": "cschleiden",
+  "repository": {
+    "url": "https://github.com/microsoft/azure-boards-vscode"
+  },
   "engines": {
     "vscode": "^1.27.0"
   },
@@ -67,6 +70,10 @@
       {
         "command": "azure-boards.add-account",
         "title": "Azure Boards: Connect to an account"
+      },
+      {
+        "command": "azure-boards.select-account",
+        "title": "Azure Boards: Select preferred account"
       }
     ],
     "menus": {
@@ -94,16 +101,25 @@
       "type": "object",
       "title": "Azure Boards",
       "properties": {
-        "azure-boards.preferred-account": {
-          "description": "Current preferred Azure Boards account",
-          "scope": "application"
+        "azure-boards.current-account": {
+          "title": "Current account",
+          "description": "Current Azure Boards account",
+          "scope": "window"
+        },
+        "azure-boards.current-project": {
+          "title": "Current project",
+          "description": "Current Azure Boards projects",
+          "scope": "window"
         },
         "azure-boards.accounts": {
           "type": "array",
-          "properties": {
-            "url": {
-              "type": "string",
-              "default": ""
+          "items": {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "default": ""
+              }
             }
           },
           "description": "Azure Boards accounts to connect to",

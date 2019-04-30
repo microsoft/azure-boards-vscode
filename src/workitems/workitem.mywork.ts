@@ -1,36 +1,47 @@
 import { IHttpClientResponse } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 import {
-  WorkItemExpand,
-  WorkItem
+  WorkItem,
+  WorkItemExpand
 } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
-import { WorkItemTypeIcon, WorkItemComposite } from "./workitem";
-import { IConnection } from "src/connection/connection";
+import {
+  getCurrentAccount,
+  getCurrentProject
+} from "../configuration/configuration";
+import { getWebApiForAccount } from "../connection";
+import { WorkItemComposite, WorkItemTypeIcon } from "./workitem";
 
 export class MyWorkProvider {
-  private _baseUrl: string;
-
-  constructor(private readonly connection: IConnection) {
-    this._baseUrl =
-      this.connection.getOrgUrl() +
-      "/" +
-      this.connection.getProject() +
-      "/_apis/work/predefinedQueries/";
-  }
-
   async getMyWorkItems(type: string): Promise<WorkItemComposite[]> {
-    const client = this.connection.getWebApi().rest.client;
-    const url = this._baseUrl + type + "?$top=50&includeCompleted=false";
-    const project = this.connection.getProject();
+    const currentAccount = getCurrentAccount();
+    if (!currentAccount) {
+      return [];
+    }
+
+    const currentProject = getCurrentProject();
+    if (!currentProject) {
+      return [];
+    }
+
+    const webApi = await getWebApiForAccount(currentAccount);
+    const client = webApi.rest.client;
+
+    const baseUrl =
+      currentAccount.uri +
+      "/" +
+      currentProject.id +
+      "/_apis/work/predefinedQueries/";
+
+    const url = baseUrl + type + "?$top=50&includeCompleted=false";
 
     const res: IHttpClientResponse = await client.get(url); //needed to call basic client api
-    const witApi = await this.connection.getWebApi().getWorkItemTrackingApi(); //needed to call wit api
+    const witApi = await webApi.getWorkItemTrackingApi(); //needed to call wit api
 
     const body: string = await res.readBody();
     const myWorkResponse: IMyWorkResponse = JSON.parse(body);
 
     //get icons
     //todo: stop loading this up on each node, just load once and cache it
-    const workItemTypes = await witApi.getWorkItemTypes(project);
+    const workItemTypes = await witApi.getWorkItemTypes(currentProject.id);
     const icons =
       workItemTypes !== null
         ? workItemTypes.map(x => new WorkItemTypeIcon(x))

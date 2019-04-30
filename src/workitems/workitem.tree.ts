@@ -1,16 +1,14 @@
 import * as vscode from "vscode";
 import { WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
-import { IConnection } from "src/connection/connection";
-import { Commands } from "src/commands/commands";
+import { Commands } from "../commands/commands";
+import { getCurrentAccount } from "../configuration/configuration";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
   private _onDidChangeTreeData: vscode.EventEmitter<
     TreeNodeParent | undefined
   > = new vscode.EventEmitter<TreeNodeParent | undefined>();
-
-  constructor(private connection: IConnection) {}
 
   readonly onDidChangeTreeData: vscode.Event<TreeNodeParent | undefined> = this
     ._onDidChangeTreeData.event;
@@ -19,19 +17,15 @@ export class WorkItemTreeNodeProvider
     element?: TreeNodeParent | undefined
   ): vscode.ProviderResult<TreeNodeParent[]> {
     if (!element) {
-      if (!this.connection.isConnectionConfigured()) {
+      if (!getCurrentAccount()) {
         return [new NoConnectionNode()];
       }
 
       return [
-        new TreeNodeChildWorkItem(
-          this.connection,
-          "Assigned to me",
-          "AssignedToMe"
-        ),
-        new TreeNodeChildWorkItem(this.connection, "My activity", "MyActivity"),
-        new TreeNodeChildWorkItem(this.connection, "Mentioned", "Mentioned"),
-        new TreeNodeChildWorkItem(this.connection, "Following", "Following")
+        new TreeNodeChildWorkItem("Assigned to me", "AssignedToMe"),
+        new TreeNodeChildWorkItem("My activity", "MyActivity"),
+        new TreeNodeChildWorkItem("Mentioned", "Mentioned"),
+        new TreeNodeChildWorkItem("Following", "Following")
       ];
     }
 
@@ -74,20 +68,14 @@ class NoConnectionNode extends TreeNodeParent {
 }
 
 export class TreeNodeChildWorkItem extends TreeNodeParent {
-  constructor(
-    private readonly connection: IConnection,
-    label: string,
-    private readonly type: string
-  ) {
+  constructor(label: string, private readonly type: string) {
     super(label, vscode.TreeItemCollapsibleState.Collapsed);
   }
 
   async getWorkItemsForNode(): Promise<TreeNodeParent[]> {
     try {
       //go get the work items from the mywork provider
-      const myWorkProvider: MyWorkProvider = new MyWorkProvider(
-        this.connection
-      );
+      const myWorkProvider: MyWorkProvider = new MyWorkProvider();
 
       //get mashed list of workitems from the myworkprovider
       const workItems = await myWorkProvider.getMyWorkItems(this.type);

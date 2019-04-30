@@ -1,15 +1,10 @@
 import * as vscode from "vscode";
 import { Commands, registerGlobalCommands } from "./commands/commands";
-import { AzureBoardsConnection, IConnection } from "./connection/connection";
-import { WorkItemTreeNodeProvider } from "./workitems/workitem.tree";
 import { registerConfigurationCommands } from "./configuration/commands";
+import { WorkItemTreeNodeProvider } from "./workitems/workitem.tree";
 
 export function activate(context: vscode.ExtensionContext) {
-  // Create Azure Boards connection object
-  const connection = new AzureBoardsConnection();
-  context.subscriptions.push(connection);
-
-  registerTreeView(context, connection);
+  registerTreeView(context);
 
   registerGlobalCommands(context);
 
@@ -19,11 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
 /**
  * Register work items tree view
  */
-export function registerTreeView(
-  context: vscode.ExtensionContext,
-  connection: IConnection
-): void {
-  const treeDataProvider = new WorkItemTreeNodeProvider(connection);
+export function registerTreeView(context: vscode.ExtensionContext): void {
+  const treeDataProvider = new WorkItemTreeNodeProvider();
 
   context.subscriptions.push(
     vscode.window.createTreeView("work-items", {
