@@ -6,8 +6,8 @@ import {
 import {
   getCurrentAccount,
   getCurrentProject
-} from "../configuration/configuration";
-import { getWebApiForAccount } from "../connection";
+} from "../../configuration/configuration";
+import { getWebApiForAccount } from "../../connection";
 import { WorkItemComposite, WorkItemTypeIcon } from "./workitem";
 
 export class MyWorkProvider {
@@ -54,12 +54,13 @@ export class MyWorkProvider {
         : [];
 
     //get work items from id's
-    const workItems: WorkItem[] = await witApi.getWorkItems(
-      workItemIds,
-      ["System.Id", "System.Title", "System.WorkItemType"],
-      undefined,
-      WorkItemExpand.Links
-    );
+    const workItems: WorkItem[] =
+      (await witApi.getWorkItems(
+        workItemIds,
+        ["System.Id", "System.Title", "System.WorkItemType"],
+        undefined,
+        WorkItemExpand.Links
+      )) || [];
 
     //loop through work items list and map it to temp map collection
     const workItemsMap: { [workItemId: number]: WorkItem } = {};

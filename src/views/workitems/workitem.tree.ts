@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
 import { WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
-import { Commands } from "../commands/commands";
-import { getCurrentAccount } from "../configuration/configuration";
+import { getCurrentAccount } from "../../configuration/configuration";
+import { ConfigurationCommands } from "../../configuration/commands";
+import { Commands } from "../../commands/commands";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
@@ -61,9 +62,13 @@ export class TreeNodeParent extends vscode.TreeItem {
 
 class NoConnectionNode extends TreeNodeParent {
   constructor() {
-    super("No connection, please connect to Azure Boards");
+    super("Click here to connect to Azure Boards");
 
     this.contextValue = "no-connection";
+    this.command = {
+      title: "Connect",
+      command: ConfigurationCommands.SelectAccount
+    };
   }
 }
 

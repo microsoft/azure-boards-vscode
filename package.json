@@ -8,13 +8,14 @@
     "url": "https://github.com/microsoft/azure-boards-vscode"
   },
   "engines": {
-    "vscode": "^1.27.0"
+    "vscode": "^1.30.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onView:work-items"
+    "onView:work-items",
+    "onView:pending-work-items"
   ],
   "extensionDependencies": [
     "vscode.git"
@@ -36,6 +37,12 @@
           "id": "work-items",
           "name": "My work items"
         }
+      ],
+      "scm": [
+        {
+          "id": "pending-work-items",
+          "name": "Associated work items"
+        }
       ]
     },
     "commands": [
@@ -44,7 +51,7 @@
         "title": "Azure Boards: Open settings"
       },
       {
-        "command": "azure-boards.refresh-work-items",
+        "command": "azure-boards.refresh",
         "title": "Refresh",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -79,7 +86,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "azure-boards.refresh-work-items",
+          "command": "azure-boards.refresh",
           "when": "view == work-items",
           "group": "navigation"
         }
@@ -150,6 +157,7 @@
     "keytar": "^4.6.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts-ts": "^3.1.0"
+    "react-scripts-ts": "^3.1.0",
+    "vsts-device-flow-auth": "^1.136.0"
   }
 }

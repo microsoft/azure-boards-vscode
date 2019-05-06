@@ -1,14 +1,16 @@
-import { setPassword } from "keytar";
+import { Commands } from "../commands/commands";
 import * as vscode from "vscode";
+import { getWebApiForAccount } from "../connection";
 import {
   addAccount,
-  IAccount,
   getConfiguration,
-  setCurrentAccount,
+  IAccount,
   IProject,
+  setCurrentAccount,
   setCurrentProject
 } from "./configuration";
-import { getWebApiForAccount } from "../connection";
+import { storeTokenForAccount } from "./token";
+import { getTokenUsingDeviceFlow } from "./auth";
 
 export const enum ConfigurationCommands {
   AddAccount = "azure-boards.add-account",
@@ -23,36 +25,35 @@ export function registerConfigurationCommands(
       ConfigurationCommands.AddAccount,
       async () => {
         const accountUri = await vscode.window.showInputBox({
-          prompt: "Enter account uri"
+          prompt: "Enter account uri",
+          placeHolder: "https://dev.azure.com/<account>"
         });
 
         if (!accountUri) {
           return;
         }
 
-        // TODO: Start device flow, for now just ask for token
-        const token = await vscode.window.showInputBox({
-          value: "",
-          prompt: `Provide token for ${accountUri}`,
-          placeHolder: "",
-          password: true
-        });
+        // TODO: Check if the account already exists?
 
+        // TODO: Check account uri is well-formed?
+        // TODO: Try to be nice and build the account uri?
+
+        const account = { uri: accountUri };
+
+        const token = await getTokenUsingDeviceFlow(account);
         if (!token) {
           return;
         }
 
-        //   // Try to find existing token
-        //   const currentToken = await getPassword(
-        //     "Azure Boards VS Code",
-        //     accountUri
-        //   );
-
         // Store token
-        await setPassword("Azure Boards VS Code", accountUri, token);
+        await storeTokenForAccount(account, token);
 
         // Store this account as known
-        await addAccount({ uri: accountUri });
+        await addAccount(account);
+
+        vscode.window.showInformationMessage(
+          `${Resources.Configuration_AddedAccount} ${accountUri}`
+        );
       }
     )
   );
@@ -62,7 +63,19 @@ export function registerConfigurationCommands(
       ConfigurationCommands.SelectAccount,
       async () => {
         const account = await selectAccount();
-        if (account) {
+        if (!account) {
+          return;
+        }
+
+        if (account === "add") {
+          // Add new account, then restart selection
+          await vscode.commands.executeCommand(
+            ConfigurationCommands.AddAccount
+          );
+          await vscode.commands.executeCommand(
+            ConfigurationCommands.SelectAccount
+          );
+        } else {
           await setCurrentAccount(account);
 
           const project = await selectProject(account);
@@ -70,24 +83,45 @@ export function registerConfigurationCommands(
             await setCurrentProject(project);
           }
 
-          // TODO: CS: Show confirmation?
+          // Refresh view now that we have a connection
+          await vscode.commands.executeCommand(Commands.Refresh);
         }
       }
     )
   );
 }
 
-async function selectAccount(): Promise<IAccount | undefined> {
+interface IAccountQuickPickItem extends vscode.QuickPickItem {
+  account?: IAccount;
+}
+
+async function selectAccount(): Promise<IAccount | "add" | undefined> {
   const { accounts } = getConfiguration();
+  const AddAccountItem: IAccountQuickPickItem = {
+    label: "➕ Add account"
+  };
 
   const selection = await vscode.window.showQuickPick(
-    accounts.map(a => a.uri),
+    [
+      AddAccountItem,
+      ...accounts.map(
+        account =>
+          ({
+            label: account.uri,
+            account
+          } as IAccountQuickPickItem)
+      )
+    ],
     {
       placeHolder: "Select an account..."
     }
   );
   if (selection) {
-    return accounts.filter(x => x.uri === selection)[0];
+    if (selection === AddAccountItem) {
+      return "add";
+    }
+
+    return selection.account;
   }
 
   return undefined;
@@ -100,7 +134,8 @@ interface IProjectQuickPickItem extends vscode.QuickPickItem {
 async function selectProject(account: IAccount): Promise<IProject | undefined> {
   return vscode.window.withProgress(
     {
-      location: vscode.ProgressLocation.Window
+      location: vscode.ProgressLocation.Window,
+      title: "Loading projects..."
     },
     async () => {
       const webApi = await getWebApiForAccount(account);
