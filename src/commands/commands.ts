@@ -5,7 +5,7 @@ import { BaseReactPanel } from "../webviews/webview";
 
 export const enum Commands {
   WorkItemOpen = "azure-boards.open-work-item",
-  WorkItemsRefresh = "azure-boards.refresh-work-items",
+  Refresh = "azure-boards.refresh",
   WorkItemMention = "azure-boards.mention-work-item",
   SettingsShow = "azure-boards.settings.show"
 }
