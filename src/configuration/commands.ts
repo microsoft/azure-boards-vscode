@@ -1,4 +1,4 @@
-import { format, isNullOrUndefined } from "util";
+import { format } from "util";
 import * as vscode from "vscode";
 import { Commands } from "../commands/commands";
 import { getWebApiForAccount } from "../connection";
@@ -7,12 +7,12 @@ import {
   accountExists,
   addAccount,
   getConfiguration,
+  getCurrentAccount,
   IAccount,
   IProject,
   removeAccount,
   setCurrentAccount,
-  setCurrentProject,
-  getCurrentAccount
+  setCurrentProject
 } from "./configuration";
 import { isValidAzureBoardsUrl } from "./url";
 
