@@ -65,6 +65,7 @@ class NoConnectionNode extends TreeNodeParent {
     super("Click here to connect to Azure Boards");
 
     this.contextValue = "no-connection";
+    this.iconPath = undefined;
     this.command = {
       title: "Connect",
       command: ConfigurationCommands.SelectAccount
