@@ -2,7 +2,7 @@
   "name": "azure-boards-vs-code",
   "displayName": "azure-boards-vs-code",
   "description": "",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "publisher": "microsoft",
   "repository": {
     "url": "https://github.com/microsoft/azure-boards-vscode"
