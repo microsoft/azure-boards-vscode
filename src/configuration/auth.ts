@@ -9,20 +9,14 @@ import {
 } from "vsts-device-flow-auth";
 import { IAccount } from "./configuration";
 
-const enum DeviceFlowConstants {
-  ManualOption = "manual",
-  DeviceFlowOption = "deviceflow",
-  ClientId = "97877f11-0fc6-4aee-b1ff-febb0519dd00",
-  RedirectUri = "https://mseng.visualstudio.com"
-}
+const ClientId = "97877f11-0fc6-4aee-b1ff-febb0519dd00";
 
 export async function getTokenUsingDeviceFlow(
   account: IAccount
 ): Promise<string | undefined> {
   const authOptions: IDeviceFlowAuthenticationOptions = {
-    clientId: DeviceFlowConstants.ClientId,
-    redirectUri: DeviceFlowConstants.RedirectUri
-    // userAgent: `${UserAgentProvider.UserAgent}`
+    clientId: ClientId,
+    redirectUri: account.uri
   };
   const tokenOptions: IDeviceFlowTokenOptions = {
     tokenDescription: `Azure Boards VSCode extension: ${account.uri}`
@@ -81,4 +75,6 @@ export async function getTokenUsingDeviceFlow(
 
     return token;
   }
+
+  return undefined;
 }

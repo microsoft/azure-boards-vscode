@@ -1,7 +1,6 @@
 import * as vscode from "vscode";
 import { Commands, registerGlobalCommands } from "./commands/commands";
 import { registerConfigurationCommands } from "./configuration/commands";
-import { PendingWorkItemTreeNodeProvider } from "./views/pending-work-items/pendingWorkItems";
 import { WorkItemTreeNodeProvider } from "./views/workitems/workitem.tree";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -24,11 +23,11 @@ export function registerTreeView(context: vscode.ExtensionContext): void {
     })
   );
 
-  context.subscriptions.push(
-    vscode.window.createTreeView("pending-work-items", {
-      treeDataProvider: new PendingWorkItemTreeNodeProvider()
-    })
-  );
+  // context.subscriptions.push(
+  //   vscode.window.createTreeView("pending-work-items", {
+  //     treeDataProvider: new PendingWorkItemTreeNodeProvider()
+  //   })
+  // );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(Commands.Refresh, () => {

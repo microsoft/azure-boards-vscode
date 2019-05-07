@@ -15,7 +15,9 @@
   ],
   "activationEvents": [
     "onView:work-items",
-    "onView:pending-work-items"
+    "onCommand:azure-boards.add-account",
+    "onCommand:azure-boards.remove-account",
+    "onCommand:azure-boards.select-account"
   ],
   "extensionDependencies": [
     "vscode.git"
@@ -37,19 +39,9 @@
           "id": "work-items",
           "name": "My work items"
         }
-      ],
-      "scm": [
-        {
-          "id": "pending-work-items",
-          "name": "Associated work items"
-        }
       ]
     },
     "commands": [
-      {
-        "command": "azure-boards.settings.show",
-        "title": "Azure Boards: Open settings"
-      },
       {
         "command": "azure-boards.refresh",
         "title": "Refresh",
@@ -77,6 +69,10 @@
       {
         "command": "azure-boards.add-account",
         "title": "Azure Boards: Connect to an account"
+      },
+      {
+        "command": "azure-boards.remove-account",
+        "title": "Azure Boards: Remove a connected account"
       },
       {
         "command": "azure-boards.select-account",

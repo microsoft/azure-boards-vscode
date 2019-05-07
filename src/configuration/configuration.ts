@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { storeTokenForAccount, removeTokenForAccount } from "./token";
 
 export interface IAccount {
   uri: string;
@@ -36,7 +37,10 @@ export function getConfiguration(): IConfiguration {
  * Add a new account
  * @param account
  */
-export async function addAccount(account: IAccount): Promise<void> {
+export async function addAccount(
+  account: IAccount,
+  token: string
+): Promise<void> {
   const config = getConfig();
 
   let accounts: IAccount[] = [];
@@ -46,13 +50,47 @@ export async function addAccount(account: IAccount): Promise<void> {
 
   accounts.push(account);
 
+  // Store token
+  await storeTokenForAccount(account, token);
+
   await config.update("accounts", accounts, vscode.ConfigurationTarget.Global);
+}
+
+export async function removeAccount(account: IAccount): Promise<void> {
+  const config = getConfig();
+  if (config.has("accounts")) {
+    const accounts: IAccount[] = config.get("accounts", []);
+    const idx = accounts.findIndex(
+      x => x.uri.toLocaleLowerCase() === account.uri.toLocaleLowerCase()
+    );
+    if (idx >= 0) {
+      accounts.splice(idx, 1);
+    }
+
+    await removeTokenForAccount(account);
+
+    await config.update(
+      "accounts",
+      accounts,
+      vscode.ConfigurationTarget.Global
+    );
+  }
+}
+
+export function accountExists(account: IAccount): boolean {
+  const config = getConfiguration();
+
+  return config.accounts.some(
+    a => a.uri.toLocaleLowerCase() === account.uri.toLocaleLowerCase()
+  );
 }
 
 /**
  * Set the current account
  */
-export async function setCurrentAccount(account: IAccount): Promise<void> {
+export async function setCurrentAccount(
+  account: IAccount | undefined
+): Promise<void> {
   await getConfig().update("current-account", account);
 }
 
@@ -64,14 +102,16 @@ export function getCurrentAccount(): IAccount | undefined {
 }
 
 /**
- * Set the current account
+ * Set the current project
  */
-export async function setCurrentProject(project: IProject): Promise<void> {
+export async function setCurrentProject(
+  project: IProject | undefined
+): Promise<void> {
   await getConfig().update("current-project", project);
 }
 
 /**
- * Get the current account
+ * Get the current project
  */
 export function getCurrentProject(): IProject | undefined {
   return getConfiguration().currentProject;
