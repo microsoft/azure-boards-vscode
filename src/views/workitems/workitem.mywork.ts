@@ -9,7 +9,7 @@ import {
 } from "../../configuration/configuration";
 import { getWebApiForAccount } from "../../connection";
 import { WorkItemComposite } from "./workitem";
-import { WorkItemTypeProvider } from "src/workitems/workitem.icons";
+import { WorkItemTypeProvider } from "../../workitems/workitem.icons";
 
 export class MyWorkProvider {
   private workItemTypeProvider = new WorkItemTypeProvider();

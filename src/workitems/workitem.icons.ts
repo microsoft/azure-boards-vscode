@@ -2,8 +2,8 @@ import { WorkItemType } from "azure-devops-node-api/interfaces/WorkItemTrackingI
 import {
   getCurrentAccount,
   getCurrentProject
-} from "src/configuration/configuration";
-import { getWebApiForAccount } from "src/connection";
+} from "../configuration/configuration";
+import { getWebApiForAccount } from "../connection";
 
 export class WorkItemTypeProvider {
   private _iconPromise: Promise<WorkItemTypeIcon[]> | [];

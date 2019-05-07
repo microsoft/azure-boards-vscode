@@ -2,8 +2,8 @@
   "name": "azure-boards-vs-code",
   "displayName": "azure-boards-vs-code",
   "description": "",
-  "version": "0.0.1",
-  "publisher": "cschleiden",
+  "version": "0.0.4",
+  "publisher": "microsoft",
   "repository": {
     "url": "https://github.com/microsoft/azure-boards-vscode"
   },
@@ -136,7 +136,8 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile && node ./node_modules/vscode/bin/test",
+    "package": "npm version patch --no-git-tag-version && vsce package"
   },
   "devDependencies": {
     "@types/keytar": "^4.4.0",
@@ -146,6 +147,7 @@
     "@types/react-dom": "^16.8.4",
     "tslint": "5.14.0",
     "typescript": "3.3.4000",
+    "vsce": "^1.61.0",
     "vscode": "1.1.33"
   },
   "dependencies": {
