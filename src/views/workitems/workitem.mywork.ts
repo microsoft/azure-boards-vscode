@@ -8,9 +8,12 @@ import {
   getCurrentProject
 } from "../../configuration/configuration";
 import { getWebApiForAccount } from "../../connection";
-import { WorkItemComposite, WorkItemTypeIcon } from "./workitem";
+import { WorkItemComposite } from "./workitem";
+import { WorkItemTypeProvider } from "src/workitems/workitem.icons";
 
 export class MyWorkProvider {
+  private workItemTypeProvider = new WorkItemTypeProvider();
+
   async getMyWorkItems(type: string): Promise<WorkItemComposite[]> {
     const currentAccount = getCurrentAccount();
     if (!currentAccount) {
@@ -39,13 +42,10 @@ export class MyWorkProvider {
     const body: string = await res.readBody();
     const myWorkResponse: IMyWorkResponse = JSON.parse(body);
 
-    //get icons
-    //todo: stop loading this up on each node, just load once and cache it
-    const workItemTypes = await witApi.getWorkItemTypes(currentProject.id);
-    const icons =
-      workItemTypes !== null
-        ? workItemTypes.map(x => new WorkItemTypeIcon(x))
-        : [];
+    // get work item icons from work item provider
+    const icons = this.workItemTypeProvider
+      ? await this.workItemTypeProvider.getIcons()
+      : null;
 
     //get id's
     const workItemIds =
