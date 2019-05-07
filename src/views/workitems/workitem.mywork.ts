@@ -1,37 +1,51 @@
 import { IHttpClientResponse } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 import {
-  WorkItemExpand,
-  WorkItem
+  WorkItem,
+  WorkItemExpand
 } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
+import {
+  getCurrentAccount,
+  getCurrentProject
+} from "../../configuration/configuration";
+import { getWebApiForAccount } from "../../connection";
 import { WorkItemComposite } from "./workitem";
-import { IConnection } from "src/connection/connection";
+import { WorkItemTypeProvider } from "src/workitems/workitem.icons";
 
 export class MyWorkProvider {
-  private _baseUrl: string;
-  private _project: string;
-
-  constructor(private readonly connection: IConnection) {
-    this._project = this.connection.getProject();
-    this._baseUrl =
-      this.connection.getOrgUrl() +
-      "/" +
-      this._project +
-      "/_apis/work/predefinedQueries/";
-  }
+  private workItemTypeProvider = new WorkItemTypeProvider();
 
   async getMyWorkItems(type: string): Promise<WorkItemComposite[]> {
-    const client = this.connection.getWebApi().rest.client;
-    const url = this._baseUrl + type + "?$top=50&includeCompleted=false";
+    const currentAccount = getCurrentAccount();
+    if (!currentAccount) {
+      return [];
+    }
+
+    const currentProject = getCurrentProject();
+    if (!currentProject) {
+      return [];
+    }
+
+    const webApi = await getWebApiForAccount(currentAccount);
+    const client = webApi.rest.client;
+
+    const baseUrl =
+      currentAccount.uri +
+      "/" +
+      currentProject.id +
+      "/_apis/work/predefinedQueries/";
+
+    const url = baseUrl + type + "?$top=50&includeCompleted=false";
 
     const res: IHttpClientResponse = await client.get(url); //needed to call basic client api
-    const witApi = await this.connection.getWebApi().getWorkItemTrackingApi(); //needed to call wit api
+    const witApi = await webApi.getWorkItemTrackingApi(); //needed to call wit api
 
     const body: string = await res.readBody();
     const myWorkResponse: IMyWorkResponse = JSON.parse(body);
 
-    //get work item icons from work item provider on connectionn object
-    const workItemProvider = this.connection.workItemProvider;
-    const icons = workItemProvider ? await workItemProvider.getIcons() : null;
+    // get work item icons from work item provider
+    const icons = this.workItemTypeProvider
+      ? await this.workItemTypeProvider.getIcons()
+      : null;
 
     //get id's
     const workItemIds =
@@ -40,12 +54,13 @@ export class MyWorkProvider {
         : [];
 
     //get work items from id's
-    const workItems: WorkItem[] = await witApi.getWorkItems(
-      workItemIds,
-      ["System.Id", "System.Title", "System.WorkItemType"],
-      undefined,
-      WorkItemExpand.Links
-    );
+    const workItems: WorkItem[] =
+      (await witApi.getWorkItems(
+        workItemIds,
+        ["System.Id", "System.Title", "System.WorkItemType"],
+        undefined,
+        WorkItemExpand.Links
+      )) || [];
 
     //loop through work items list and map it to temp map collection
     const workItemsMap: { [workItemId: number]: WorkItem } = {};

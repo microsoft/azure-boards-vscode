@@ -4,14 +4,20 @@
   "description": "",
   "version": "0.0.1",
   "publisher": "cschleiden",
+  "repository": {
+    "url": "https://github.com/microsoft/azure-boards-vscode"
+  },
   "engines": {
-    "vscode": "^1.27.0"
+    "vscode": "^1.30.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onView:work-items"
+    "onView:work-items",
+    "onCommand:azure-boards.add-account",
+    "onCommand:azure-boards.remove-account",
+    "onCommand:azure-boards.select-account"
   ],
   "extensionDependencies": [
     "vscode.git"
@@ -37,11 +43,7 @@
     },
     "commands": [
       {
-        "command": "azure-boards.settings.show",
-        "title": "Azure Boards: Open settings"
-      },
-      {
-        "command": "azure-boards.refresh-work-items",
+        "command": "azure-boards.refresh",
         "title": "Refresh",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -63,12 +65,24 @@
           "light": "resources/light/stage.svg",
           "dark": "resources/dark/stage.svg"
         }
+      },
+      {
+        "command": "azure-boards.add-account",
+        "title": "Azure Boards: Connect to an account"
+      },
+      {
+        "command": "azure-boards.remove-account",
+        "title": "Azure Boards: Remove a connected account"
+      },
+      {
+        "command": "azure-boards.select-account",
+        "title": "Azure Boards: Select preferred account"
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "azure-boards.refresh-work-items",
+          "command": "azure-boards.refresh",
           "when": "view == work-items",
           "group": "navigation"
         }
@@ -90,47 +104,42 @@
       "type": "object",
       "title": "Azure Boards",
       "properties": {
-        "azure-boards.account": {
-          "type": "object",
-          "properties": {
-            "url": {
-              "type": "string",
-              "default": ""
-            }
-          },
-          "description": "Azure Boards account to connect to",
-          "scope": "resource"
+        "azure-boards.current-account": {
+          "title": "Current account",
+          "description": "Current Azure Boards account",
+          "scope": "window"
         },
-        "azure-boards.project": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "default": ""
-            },
-            "id": {
-              "type": "string",
-              "default": ""
-            },
-            "key": {
-              "type": "string",
-              "default": ""
+        "azure-boards.current-project": {
+          "title": "Current project",
+          "description": "Current Azure Boards projects",
+          "scope": "window"
+        },
+        "azure-boards.accounts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uri": {
+                "type": "string",
+                "default": ""
+              }
             }
           },
-          "description": "",
-          "scope": "resource"
+          "description": "Azure Boards accounts to connect to",
+          "scope": "application"
         }
       }
     }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "react-scripts-ts build && tsc -p ./",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
+    "@types/keytar": "^4.4.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
     "@types/react": "^16.8.13",
@@ -141,8 +150,7 @@
   },
   "dependencies": {
     "azure-devops-node-api": "^7.0.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts-ts": "^3.1.0"
+    "keytar": "^4.6.0",
+    "vsts-device-flow-auth": "^1.136.0"
   }
 }

@@ -1,5 +1,5 @@
 import { WorkItem } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
-import { WorkItemTypeIcon } from "./workitem.icons";
+import { WorkItemTypeIcon } from "../../workitems/workitem.icons";
 
 export class WorkItemComposite {
   public readonly workItemType: string;

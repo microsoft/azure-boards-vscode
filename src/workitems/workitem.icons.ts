@@ -1,10 +1,14 @@
-import { IConnection } from "src/connection/connection";
 import { WorkItemType } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
+import {
+  getCurrentAccount,
+  getCurrentProject
+} from "src/configuration/configuration";
+import { getWebApiForAccount } from "src/connection";
 
 export class WorkItemTypeProvider {
   private _iconPromise: Promise<WorkItemTypeIcon[]> | [];
 
-  constructor(private readonly connection: IConnection) {
+  constructor() {
     this._iconPromise = this._getIcons();
   }
 
@@ -17,11 +21,22 @@ export class WorkItemTypeProvider {
   }
 
   private async _getIcons(): Promise<WorkItemTypeIcon[]> {
-    const project = this.connection.getProject();
-    const witApi = await this.connection.getWebApi().getWorkItemTrackingApi(); //needed to call wit api
+    const account = getCurrentAccount();
+    if (!account) {
+      return [];
+    }
 
-    //get icons
-    const workItemTypes = await witApi.getWorkItemTypes(project);
+    const project = await getCurrentProject();
+    if (!project) {
+      return [];
+    }
+
+    const witApi = await (await getWebApiForAccount(
+      account
+    )).getWorkItemTrackingApi();
+
+    //  Get icons
+    const workItemTypes = await witApi.getWorkItemTypes(project.id);
     const icons =
       workItemTypes !== null
         ? workItemTypes.map(x => new WorkItemTypeIcon(x))
