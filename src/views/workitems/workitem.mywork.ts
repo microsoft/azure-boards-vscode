@@ -10,7 +10,7 @@ import {
 import { getWebApiForAccount } from "../../connection";
 import { WorkItemComposite } from "./workitem";
 import { WorkItemTypeProvider } from "../../workitems/workitem.icons";
-import { Telemetry } from "../../util/telemetry";
+import { trackTelemetryEvent } from "../../util/telemetry";
 
 export class MyWorkProvider {
   private workItemTypeProvider = new WorkItemTypeProvider();
@@ -48,13 +48,13 @@ export class MyWorkProvider {
       ? await this.workItemTypeProvider.getIcons()
       : null;
 
-    //get id's
+    // get id's
     const workItemIds =
       myWorkResponse.results !== null
         ? myWorkResponse.results.map(x => x.id)
         : [];
 
-    //get work items from id's
+    // get work items from id's
     const workItems: WorkItem[] =
       (await witApi.getWorkItems(
         workItemIds,
@@ -63,19 +63,19 @@ export class MyWorkProvider {
         WorkItemExpand.Links
       )) || [];
 
-    //loop through work items list and map it to temp map collection
+    // loop through work items list and map it to temp map collection
     const workItemsMap: { [workItemId: number]: WorkItem } = {};
     workItems.forEach(wi => (workItemsMap[wi.id ? wi.id : -1] = wi));
 
-    //set the order of workitems to match that of returned id's
+    // set the order of workitems to match that of returned id's
     const orderedWorkItems: WorkItem[] = workItemIds.map(
       workItemId => workItemsMap[workItemId]
     );
 
-    //track telemetry event
-    Telemetry.trackEvent(type);
+    // track telemetry event
+    trackTelemetryEvent(type);
 
-    //map orderedWorkItems into our composite to include the right icon
+    // map orderedWorkItems into our composite to include the right icon
     return orderedWorkItems.map(wi => new WorkItemComposite(wi, icons));
   }
 }

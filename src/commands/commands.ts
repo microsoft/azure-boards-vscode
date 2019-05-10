@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { GitExtension, Remote } from "../externals/git";
 import { SettingsPanel } from "../webviews/settings";
 import { BaseReactPanel } from "../webviews/webview";
-import { Telemetry } from "../util/telemetry";
+import { trackTelemetryEvent } from "../util/telemetry";
 
 export const enum Commands {
   WorkItemOpen = "azure-boards.open-work-item",
@@ -17,7 +17,7 @@ export function registerGlobalCommands(context: vscode.ExtensionContext) {
       const editUrl = args.editUrl || args;
 
       //track edit work item telemetry event
-      Telemetry.trackEvent("Edit Work Item");
+      trackTelemetryEvent(Commands.WorkItemOpen);
 
       vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(editUrl));
     })
@@ -30,7 +30,7 @@ export function registerGlobalCommands(context: vscode.ExtensionContext) {
     );
 
     //track mention work item telemetry event
-    Telemetry.trackEvent("Mention Work Item");
+    trackTelemetryEvent(Commands.WorkItemMention);
 
     mentionWorkItem(gitExtension, workItemId);
   });
