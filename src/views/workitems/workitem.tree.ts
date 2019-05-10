@@ -4,6 +4,7 @@ import { MyWorkProvider } from "./workitem.mywork";
 import { getCurrentAccount } from "../../configuration/configuration";
 import { ConfigurationCommands } from "../../configuration/commands";
 import { Commands } from "../../commands/commands";
+import { trackTelemetryException } from "../../util/telemetry";
 
 export class WorkItemTreeNodeProvider
   implements vscode.TreeDataProvider<TreeNodeParent> {
@@ -87,7 +88,9 @@ export class TreeNodeChildWorkItem extends TreeNodeParent {
 
       return workItems.map(wi => new WorkItemNode(wi));
     } catch (e) {
-      // TODO: Handle error correctly
+      // track telemetry exception
+      trackTelemetryException(e);
+
       console.error(e);
     }
 
