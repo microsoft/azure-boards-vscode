@@ -10,6 +10,7 @@ import {
 import { getWebApiForAccount } from "../../connection";
 import { WorkItemComposite } from "./workitem";
 import { WorkItemTypeProvider } from "../../workitems/workitem.icons";
+import { Telemetry } from "../../util/telemetry";
 
 export class MyWorkProvider {
   private workItemTypeProvider = new WorkItemTypeProvider();
@@ -70,6 +71,9 @@ export class MyWorkProvider {
     const orderedWorkItems: WorkItem[] = workItemIds.map(
       workItemId => workItemsMap[workItemId]
     );
+
+    //track telemetry event
+    Telemetry.trackEvent(type);
 
     //map orderedWorkItems into our composite to include the right icon
     return orderedWorkItems.map(wi => new WorkItemComposite(wi, icons));
