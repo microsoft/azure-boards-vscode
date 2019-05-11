@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { GitExtension, Remote } from "../externals/git";
 import { SettingsPanel } from "../webviews/settings";
 import { BaseReactPanel } from "../webviews/webview";
+import { trackTelemetryEvent } from "../util/telemetry";
 
 export const enum Commands {
   WorkItemOpen = "azure-boards.open-work-item",
@@ -14,6 +15,10 @@ export function registerGlobalCommands(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(Commands.WorkItemOpen, args => {
       const editUrl = args.editUrl || args;
+
+      //track edit work item telemetry event
+      trackTelemetryEvent(Commands.WorkItemOpen);
+
       vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(editUrl));
     })
   );
@@ -23,6 +28,10 @@ export function registerGlobalCommands(context: vscode.ExtensionContext) {
     const gitExtension = vscode.extensions.getExtension<GitExtension>(
       "vscode.git"
     );
+
+    //track mention work item telemetry event
+    trackTelemetryEvent(Commands.WorkItemMention);
+
     mentionWorkItem(gitExtension, workItemId);
   });
 

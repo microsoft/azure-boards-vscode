@@ -2,8 +2,12 @@ import * as vscode from "vscode";
 import { Commands, registerGlobalCommands } from "./commands/commands";
 import { registerConfigurationCommands } from "./configuration/commands";
 import { WorkItemTreeNodeProvider } from "./views/workitems/workitem.tree";
+import { startTelemetry, trackTelemetryEvent } from "./util/telemetry";
 
 export function activate(context: vscode.ExtensionContext) {
+  startTelemetry();
+  trackTelemetryEvent("Loading Azure Boards Extension");
+
   registerTreeView(context);
 
   registerGlobalCommands(context);
