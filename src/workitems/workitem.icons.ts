@@ -1,9 +1,9 @@
 import { WorkItemType } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 import {
-  getCurrentAccount,
+  getCurrentOrganization,
   getCurrentProject
 } from "../configuration/configuration";
-import { getWebApiForAccount } from "../connection";
+import { getWebApiForOrganization } from "../connection";
 
 export class WorkItemTypeProvider {
   private _iconPromise: Promise<WorkItemTypeIcon[]> | [];
@@ -21,8 +21,8 @@ export class WorkItemTypeProvider {
   }
 
   private async _getIcons(): Promise<WorkItemTypeIcon[]> {
-    const account = getCurrentAccount();
-    if (!account) {
+    const organization = getCurrentOrganization();
+    if (!organization) {
       return [];
     }
 
@@ -31,8 +31,8 @@ export class WorkItemTypeProvider {
       return [];
     }
 
-    const witApi = await (await getWebApiForAccount(
-      account
+    const witApi = await (await getWebApiForOrganization(
+      organization
     )).getWorkItemTrackingApi();
 
     //  Get icons

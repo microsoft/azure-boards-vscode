@@ -4,10 +4,10 @@ import {
   WorkItemExpand
 } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 import {
-  getCurrentAccount,
+  getCurrentOrganization,
   getCurrentProject
 } from "../../configuration/configuration";
-import { getWebApiForAccount } from "../../connection";
+import { getWebApiForOrganization } from "../../connection";
 import { WorkItemComposite } from "./workitem";
 import { WorkItemTypeProvider } from "../../workitems/workitem.icons";
 import { trackTelemetryEvent } from "../../util/telemetry";
@@ -16,8 +16,8 @@ export class MyWorkProvider {
   private workItemTypeProvider = new WorkItemTypeProvider();
 
   async getMyWorkItems(type: string): Promise<WorkItemComposite[]> {
-    const currentAccount = getCurrentAccount();
-    if (!currentAccount) {
+    const currentOrganization = getCurrentOrganization();
+    if (!currentOrganization) {
       return [];
     }
 
@@ -26,11 +26,11 @@ export class MyWorkProvider {
       return [];
     }
 
-    const webApi = await getWebApiForAccount(currentAccount);
+    const webApi = await getWebApiForOrganization(currentOrganization);
     const client = webApi.rest.client;
 
     const baseUrl =
-      currentAccount.uri +
+      currentOrganization.uri +
       "/" +
       currentProject.id +
       "/_apis/work/predefinedQueries/";

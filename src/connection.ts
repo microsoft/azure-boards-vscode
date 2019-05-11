@@ -1,15 +1,15 @@
 import * as DevOpsClient from "azure-devops-node-api";
-import { IAccount } from "./configuration/configuration";
-import { getTokenForAccount } from "./configuration/token";
+import { IOrganization } from "./configuration/configuration";
+import { getTokenForOrganization } from "./configuration/token";
 
-export async function getWebApiForAccount(
-  account: IAccount
+export async function getWebApiForOrganization(
+  organization: IOrganization
 ): Promise<DevOpsClient.WebApi> {
-  const token = await getTokenForAccount(account);
+  const token = await getTokenForOrganization(organization);
   if (!token) {
-    throw new Error("Cannot get token for account");
+    throw new Error("Cannot get token for organization");
   }
 
   const handler = DevOpsClient.getHandlerFromToken(token);
-  return new DevOpsClient.WebApi(account.uri, handler);
+  return new DevOpsClient.WebApi(organization.uri, handler);
 }
