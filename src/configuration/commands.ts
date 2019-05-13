@@ -1,25 +1,25 @@
 import { format } from "util";
 import * as vscode from "vscode";
 import { Commands } from "../commands/commands";
-import { getWebApiForAccount } from "../connection";
+import { getWebApiForOrganization } from "../connection";
 import { getTokenUsingDeviceFlow } from "./auth";
 import {
-  accountExists,
-  addAccount,
+  organizationExists,
+  addOrganization,
   getConfiguration,
-  getCurrentAccount,
-  IAccount,
+  getCurrentOrganization,
+  IOrganization,
   IProject,
-  removeAccount,
-  setCurrentAccount,
+  removeOrganization,
+  setCurrentOrganization,
   setCurrentProject
 } from "./configuration";
 import { isValidAzureBoardsUrl } from "./url";
 
 export const enum ConfigurationCommands {
-  AddAccount = "azure-boards.add-account",
-  RemoveAccount = "azure-boards.remove-account",
-  SelectAccount = "azure-boards.select-account"
+  AddOrganization = "azure-boards.add-organization",
+  RemoveOrganization = "azure-boards.remove-organization",
+  SelectOrganization = "azure-boards.select-organization"
 }
 
 export function registerConfigurationCommands(
@@ -27,45 +27,45 @@ export function registerConfigurationCommands(
 ): void {
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      ConfigurationCommands.AddAccount,
+      ConfigurationCommands.AddOrganization,
       async () => {
-        const accountUri = await vscode.window.showInputBox({
-          prompt: Resources.Configuration_AccountUriPrompt,
-          placeHolder: "https://dev.azure.com/<account>"
+        const organizationUri = await vscode.window.showInputBox({
+          prompt: Resources.Configuration_OrganizationUriPrompt,
+          placeHolder: "https://dev.azure.com/<organization>"
         });
 
-        if (!accountUri) {
+        if (!organizationUri) {
           return;
         }
 
-        if (!isValidAzureBoardsUrl(accountUri)) {
+        if (!isValidAzureBoardsUrl(organizationUri)) {
           vscode.window.showErrorMessage(
-            format(Resources.Configuration_InvalidUri, accountUri)
+            format(Resources.Configuration_InvalidUri, organizationUri)
           );
 
           return;
         }
 
-        const account = { uri: accountUri };
+        const organization = { uri: organizationUri };
 
-        if (accountExists(account)) {
+        if (organizationExists(organization)) {
           vscode.window.showErrorMessage(
-            format(Resources.Configuration_AccountExists, accountUri)
+            format(Resources.Configuration_OrganizationExists, organizationUri)
           );
 
           return;
         }
 
-        const token = await getTokenUsingDeviceFlow(account);
+        const token = await getTokenUsingDeviceFlow(organization);
         if (!token) {
           return;
         }
 
-        // Store this account and token as known
-        await addAccount(account, token);
+        // Store this organization and token as known
+        await addOrganization(organization, token);
 
         vscode.window.showInformationMessage(
-          `${Resources.Configuration_AddedAccount} ${accountUri}`
+          `${Resources.Configuration_AddedOrganization} ${organizationUri}`
         );
       }
     )
@@ -73,28 +73,28 @@ export function registerConfigurationCommands(
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      ConfigurationCommands.RemoveAccount,
+      ConfigurationCommands.RemoveOrganization,
       async () => {
-        const account = await selectAccount();
-        if (!account || account === "add") {
+        const organization = await selectOrganization();
+        if (!organization || organization === "add") {
           return;
         }
 
-        await removeAccount(account);
+        await removeOrganization(organization);
 
-        // If the removed account was the current one, remove that as well
-        const currentAccount = getCurrentAccount();
+        // If the removed organization was the current one, remove that as well
+        const currentOrganization = getCurrentOrganization();
         if (
-          currentAccount &&
-          account.uri.toLocaleLowerCase() ===
-            currentAccount.uri.toLocaleLowerCase()
+          currentOrganization &&
+          organization.uri.toLocaleLowerCase() ===
+            currentOrganization.uri.toLocaleLowerCase()
         ) {
-          setCurrentAccount(undefined);
+          setCurrentOrganization(undefined);
           setCurrentProject(undefined);
         }
 
         vscode.window.showInformationMessage(
-          Resources.Configuration_RemovedAccount
+          Resources.Configuration_RemovedOrganization
         );
       }
     )
@@ -102,25 +102,25 @@ export function registerConfigurationCommands(
 
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      ConfigurationCommands.SelectAccount,
+      ConfigurationCommands.SelectOrganization,
       async () => {
-        const account = await selectAccount(true);
-        if (!account) {
+        const organization = await selectOrganization(true);
+        if (!organization) {
           return;
         }
 
-        if (account === "add") {
-          // Add new account, then restart selection
+        if (organization === "add") {
+          // Add new organization, then restart selection
           await vscode.commands.executeCommand(
-            ConfigurationCommands.AddAccount
+            ConfigurationCommands.AddOrganization
           );
           await vscode.commands.executeCommand(
-            ConfigurationCommands.SelectAccount
+            ConfigurationCommands.SelectOrganization
           );
         } else {
-          await setCurrentAccount(account);
+          await setCurrentOrganization(organization);
 
-          const project = await selectProject(account);
+          const project = await selectProject(organization);
           if (project) {
             await setCurrentProject(project);
           }
@@ -133,38 +133,38 @@ export function registerConfigurationCommands(
   );
 }
 
-interface IAccountQuickPickItem extends vscode.QuickPickItem {
-  account?: IAccount;
+interface IOrganizationQuickPickItem extends vscode.QuickPickItem {
+  organization?: IOrganization;
 }
 
-async function selectAccount(
+async function selectOrganization(
   allowAdd?: boolean
-): Promise<IAccount | "add" | undefined> {
-  const { accounts } = getConfiguration();
-  const AddAccountItem: IAccountQuickPickItem = {
-    label: "➕ Add account"
+): Promise<IOrganization | "add" | undefined> {
+  const { organizations } = getConfiguration();
+  const AddOrganizationItem: IOrganizationQuickPickItem = {
+    label: "➕ Add organization"
   };
 
-  const accountOptions = accounts.map(
-    account =>
+  const organizationOptions = organizations.map(
+    organization =>
       ({
-        label: account.uri,
-        account
-      } as IAccountQuickPickItem)
+        label: organization.uri,
+        organization
+      } as IOrganizationQuickPickItem)
   );
   if (allowAdd) {
-    accountOptions.unshift(AddAccountItem);
+    organizationOptions.unshift(AddOrganizationItem);
   }
 
-  const selection = await vscode.window.showQuickPick(accountOptions, {
-    placeHolder: Resources.Configuration_SelectAccount
+  const selection = await vscode.window.showQuickPick(organizationOptions, {
+    placeHolder: Resources.Configuration_SelectOrganization
   });
   if (selection) {
-    if (selection === AddAccountItem) {
+    if (selection === AddOrganizationItem) {
       return "add";
     }
 
-    return selection.account;
+    return selection.organization;
   }
 
   return undefined;
@@ -174,15 +174,17 @@ interface IProjectQuickPickItem extends vscode.QuickPickItem {
   project: IProject;
 }
 
-async function selectProject(account: IAccount): Promise<IProject | undefined> {
+async function selectProject(
+  organization: IOrganization
+): Promise<IProject | undefined> {
   const projects = await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
       title: Resources.Configuration_LoadingProjects
     },
     async () => {
-      const webApi = await getWebApiForAccount(account);
-      const coreApi = await webApi.getCoreApi(account.uri);
+      const webApi = await getWebApiForOrganization(organization);
+      const coreApi = await webApi.getCoreApi(organization.uri);
       const projects = await coreApi.getProjects();
       return projects.map(
         p =>
