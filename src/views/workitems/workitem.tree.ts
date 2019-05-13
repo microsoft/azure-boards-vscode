@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { WorkItemComposite } from "./workitem";
 import { MyWorkProvider } from "./workitem.mywork";
-import { getCurrentAccount } from "../../configuration/configuration";
+import { getCurrentOrganization } from "../../configuration/configuration";
 import { ConfigurationCommands } from "../../configuration/commands";
 import { Commands } from "../../commands/commands";
 import { trackTelemetryException } from "../../util/telemetry";
@@ -19,7 +19,7 @@ export class WorkItemTreeNodeProvider
     element?: TreeNodeParent | undefined
   ): vscode.ProviderResult<TreeNodeParent[]> {
     if (!element) {
-      if (!getCurrentAccount()) {
+      if (!getCurrentOrganization()) {
         return [new NoConnectionNode()];
       }
 
@@ -68,7 +68,7 @@ class NoConnectionNode extends TreeNodeParent {
     this.iconPath = undefined;
     this.command = {
       title: "Connect",
-      command: ConfigurationCommands.SelectAccount
+      command: ConfigurationCommands.SelectOrganization
     };
   }
 }

@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
-import { storeTokenForAccount, removeTokenForAccount } from "./token";
+import { storeTokenForOrganization, removeTokenForOrganization } from "./token";
 
-export interface IAccount {
+export interface IOrganization {
   uri: string;
 }
 
 export interface IConfiguration {
-  currentAccount: IAccount | undefined;
+  currentOrganization: IOrganization | undefined;
   currentProject: IProject | undefined;
 
-  accounts: IAccount[];
+  organizations: IOrganization[];
 }
 
 export interface IProject {
@@ -27,78 +27,84 @@ export function getConfiguration(): IConfiguration {
   const config = getConfig();
 
   return {
-    accounts: config.get("accounts", []),
-    currentAccount: config.get("current-account", undefined),
+    organizations: config.get("organizations", []),
+    currentOrganization: config.get("current-organization", undefined),
     currentProject: config.get("current-project", undefined)
   };
 }
 
 /**
- * Add a new account
- * @param account
+ * Add a new organization
+ * @param organization
  */
-export async function addAccount(
-  account: IAccount,
+export async function addOrganization(
+  organization: IOrganization,
   token: string
 ): Promise<void> {
   const config = getConfig();
 
-  let accounts: IAccount[] = [];
-  if (config.has("accounts")) {
-    accounts = config.get("accounts", []);
+  let organizations: IOrganization[] = [];
+  if (config.has("organizations")) {
+    organizations = config.get("organizations", []);
   }
 
-  accounts.push(account);
+  organizations.push(organization);
 
   // Store token
-  await storeTokenForAccount(account, token);
+  await storeTokenForOrganization(organization, token);
 
-  await config.update("accounts", accounts, vscode.ConfigurationTarget.Global);
+  await config.update(
+    "organizations",
+    organizations,
+    vscode.ConfigurationTarget.Global
+  );
 }
 
-export async function removeAccount(account: IAccount): Promise<void> {
+export async function removeOrganization(
+  organization: IOrganization
+): Promise<void> {
   const config = getConfig();
-  if (config.has("accounts")) {
-    const accounts: IAccount[] = config.get("accounts", []);
-    const idx = accounts.findIndex(
-      x => x.uri.toLocaleLowerCase() === account.uri.toLocaleLowerCase()
+  if (config.has("organizations")) {
+    const organizations: IOrganization[] = config.get("organizations", []);
+    const idx = organizations.findIndex(
+      x => x.uri.toLocaleLowerCase() === organization.uri.toLocaleLowerCase()
     );
     if (idx >= 0) {
-      accounts.splice(idx, 1);
+      organizations.splice(idx, 1);
     }
 
-    await removeTokenForAccount(account);
+    await removeTokenForOrganization(organization);
 
     await config.update(
-      "accounts",
-      accounts,
+      "organizations",
+      organizations,
       vscode.ConfigurationTarget.Global
     );
   }
 }
 
-export function accountExists(account: IAccount): boolean {
+export function organizationExists(organization: IOrganization): boolean {
   const config = getConfiguration();
 
-  return config.accounts.some(
-    a => a.uri.toLocaleLowerCase() === account.uri.toLocaleLowerCase()
+  return config.organizations.some(
+    a => a.uri.toLocaleLowerCase() === organization.uri.toLocaleLowerCase()
   );
 }
 
 /**
- * Set the current account
+ * Set the current organization
  */
-export async function setCurrentAccount(
-  account: IAccount | undefined
+export async function setCurrentOrganization(
+  organization: IOrganization | undefined
 ): Promise<void> {
-  await getConfig().update("current-account", account);
+  await getConfig().update("current-organization", organization);
 }
 
 /**
- * Get the current account
+ * Get the current organization
  */
-export function getCurrentAccount(): IAccount | undefined {
-  return getConfiguration().currentAccount;
+export function getCurrentOrganization(): IOrganization | undefined {
+  return getConfiguration().currentOrganization;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { getCurrentAccount } from "../configuration/configuration";
+import { getCurrentOrganization } from "../configuration/configuration";
 
 const _appInsights = require("applicationinsights");
 const _instrumentationKey = "4055bdd0-39f8-45ef-a48f-cf563234638d";
@@ -8,20 +8,23 @@ export function startTelemetry() {
 }
 
 export function trackTelemetryEvent(name: string) {
-  const currentAccount = getCurrentAccount();
-  const accountUri = currentAccount ? currentAccount.uri : "";
+  const currentOrganization = getCurrentOrganization();
+  const organizationUri = currentOrganization ? currentOrganization.uri : "";
 
   let client = _appInsights.defaultClient;
-  client.trackEvent({ name: name, properties: { organization: accountUri } });
+  client.trackEvent({
+    name: name,
+    properties: { organization: organizationUri }
+  });
 }
 
 export function trackTelemetryException(error: Error) {
-  const currentAccount = getCurrentAccount();
-  const accountUri = currentAccount ? currentAccount.uri : "";
+  const currentOrganization = getCurrentOrganization();
+  const organizationUri = currentOrganization ? currentOrganization.uri : "";
 
   let client = _appInsights.defaultClient;
   client.trackException({
     exception: new Error(error.message),
-    properties: { organization: accountUri }
+    properties: { organization: organizationUri }
   });
 }

@@ -1,21 +1,23 @@
 import { getPassword, setPassword, deletePassword } from "keytar";
-import { IAccount } from "./configuration";
+import { IOrganization } from "./configuration";
 
 const ServiceName = "Azure Boards VS Code";
 
-export async function getTokenForAccount(
-  account: IAccount
+export async function getTokenForOrganization(
+  organization: IOrganization
 ): Promise<string | null> {
-  return getPassword(ServiceName, account.uri.toLocaleLowerCase());
+  return getPassword(ServiceName, organization.uri.toLocaleLowerCase());
 }
 
-export async function storeTokenForAccount(
-  account: IAccount,
+export async function storeTokenForOrganization(
+  organization: IOrganization,
   token: string
 ): Promise<void> {
-  await setPassword(ServiceName, account.uri.toLocaleLowerCase(), token);
+  await setPassword(ServiceName, organization.uri.toLocaleLowerCase(), token);
 }
 
-export async function removeTokenForAccount(account: IAccount): Promise<void> {
-  await deletePassword(ServiceName, account.uri.toLocaleLowerCase());
+export async function removeTokenForOrganization(
+  organization: IOrganization
+): Promise<void> {
+  await deletePassword(ServiceName, organization.uri.toLocaleLowerCase());
 }

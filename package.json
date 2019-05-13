@@ -15,9 +15,9 @@
   ],
   "activationEvents": [
     "onView:work-items",
-    "onCommand:azure-boards.add-account",
-    "onCommand:azure-boards.remove-account",
-    "onCommand:azure-boards.select-account"
+    "onCommand:azure-boards.add-organization",
+    "onCommand:azure-boards.remove-organization",
+    "onCommand:azure-boards.select-organization"
   ],
   "extensionDependencies": [
     "vscode.git"
@@ -67,16 +67,16 @@
         }
       },
       {
-        "command": "azure-boards.add-account",
-        "title": "Azure Boards: Connect to an account"
+        "command": "azure-boards.add-organization",
+        "title": "Azure Boards: Connect to an organization"
       },
       {
-        "command": "azure-boards.remove-account",
-        "title": "Azure Boards: Remove a connected account"
+        "command": "azure-boards.remove-organization",
+        "title": "Azure Boards: Remove a connected organization"
       },
       {
-        "command": "azure-boards.select-account",
-        "title": "Azure Boards: Select preferred account"
+        "command": "azure-boards.select-organization",
+        "title": "Azure Boards: Select preferred organization"
       }
     ],
     "menus": {
@@ -104,9 +104,9 @@
       "type": "object",
       "title": "Azure Boards",
       "properties": {
-        "azure-boards.current-account": {
-          "title": "Current account",
-          "description": "Current Azure Boards account",
+        "azure-boards.current-organization": {
+          "title": "Current organization",
+          "description": "Current Azure Boards organization",
           "scope": "window"
         },
         "azure-boards.current-project": {
@@ -114,7 +114,7 @@
           "description": "Current Azure Boards projects",
           "scope": "window"
         },
-        "azure-boards.accounts": {
+        "azure-boards.organizations": {
           "type": "array",
           "items": {
             "type": "object",
@@ -125,7 +125,7 @@
               }
             }
           },
-          "description": "Azure Boards accounts to connect to",
+          "description": "Azure Boards organizations to connect to",
           "scope": "application"
         }
       }
