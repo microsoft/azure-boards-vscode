@@ -54,16 +54,16 @@
         "command": "azure-boards.open-work-item",
         "title": "Open work item in Azure Boards",
         "icon": {
-          "light": "resources/light/pencil.svg",
-          "dark": "resources/dark/pencil.svg"
+          "light": "resources/light/open.svg",
+          "dark": "resources/dark/open.svg"
         }
       },
       {
         "command": "azure-boards.mention-work-item",
         "title": "Mention work item in commit message",
         "icon": {
-          "light": "resources/light/stage.svg",
-          "dark": "resources/dark/stage.svg"
+          "light": "resources/light/mention.svg",
+          "dark": "resources/dark/mention.svg"
         }
       },
       {
