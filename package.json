@@ -54,8 +54,8 @@
         "command": "azure-boards.open-work-item",
         "title": "Open work item in Azure Boards",
         "icon": {
-          "light": "resources/light/open.svg",
-          "dark": "resources/dark/open.svg"
+          "light": "resources/light/globe.svg",
+          "dark": "resources/dark/globe.svg"
         }
       },
       {
