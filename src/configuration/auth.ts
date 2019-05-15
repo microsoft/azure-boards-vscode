@@ -7,23 +7,23 @@ import {
   IDeviceFlowAuthenticationOptions,
   IDeviceFlowTokenOptions
 } from "vsts-device-flow-auth";
-import { IAccount } from "./configuration";
+import { IOrganization } from "./configuration";
 
 const ClientId = "97877f11-0fc6-4aee-b1ff-febb0519dd00";
 const RedirectUri = "https://java.visualstudio.com/";
 
 export async function getTokenUsingDeviceFlow(
-  account: IAccount
+  organization: IOrganization
 ): Promise<string | undefined> {
   const authOptions: IDeviceFlowAuthenticationOptions = {
     clientId: ClientId,
-    redirectUri: RedirectUri // account.uri
+    redirectUri: RedirectUri // organization.uri
   };
   const tokenOptions: IDeviceFlowTokenOptions = {
-    tokenDescription: `Azure Boards VSCode extension: ${account.uri}`
+    tokenDescription: `Azure Boards VSCode extension: ${organization.uri}`
   };
   const dfa: DeviceFlowAuthenticator = new DeviceFlowAuthenticator(
-    account.uri,
+    organization.uri,
     authOptions,
     tokenOptions
   );
