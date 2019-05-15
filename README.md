@@ -4,7 +4,7 @@
 
 This extension provides easy access to your Azure Boards work items, directly from within Visual Studio Code. See the work assigned to you, work you've recently had activity on, work you've been mentioned on, and work you're following. You can open a work item to gather more context or make an edit. Once you're ready to commit, starting a commit message that includes a work item mention is just a click away.
 
-![Screenshot](resources/screenshot.png)
+![Screenshot](media/screenshot.png)
 
 ## Prerequisites
 
