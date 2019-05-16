@@ -7,10 +7,10 @@ Make sure you've already cloned the repo. :smile:
 
 Interested in contributing to the azure-boards-vscode project? There are plenty of ways to contribute, all of which help make the project better.
 
-- Submit a [bug report](https://github.com/Microsoft/azure-boards-vscode/issues/new) or [feature request](https://github.com/Microsoft/azure-boards-vscode/issues/new) through the Issue Tracker
-- Review the [source code changes](https://github.com/Microsoft/azure-boards-vscode/pulls)
+- Submit a [bug report](https://github.com/microsoft/azure-boards-vscode/issues/new) or [feature request](https://github.com/microsoft/azure-boards-vscode/issues/new) through the Issue Tracker
+- Review the [source code changes](https://github.com/microsoft/azure-boards-vscode/pulls)
 - Submit a code fix for a bug (see [Submitting Pull Requests](#submitting-pull-requests) below)
-- Participate in [discussions](https://github.com/Microsoft/azure-boards-vscode/issues)
+- Participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues)
 
 ## Set up Node, npm and gulp
 
@@ -20,26 +20,18 @@ Interested in contributing to the azure-boards-vscode project? There are plenty 
 
 **Linux**: Install [using package manager](https://nodejs.org/en/download/package-manager/)
 
-From a terminal ensure at least node 5.4.1 and npm 3:
+From a terminal ensure at least node 8.11.3 and npm 6.9.0:
 
 ```bash
 $ node -v && npm -v
-v5.9.0
-3.8.2
+v8.11.3
+6.9.0
 ```
 
-**Note**: To get npm version 3.8.2, you may need to update npm after installing node. To do that:
+**Note**: To get npm version 6.9.0, you may need to update npm after installing node. To do that:
 
 ```bash
 [sudo] npm install npm -g
-```
-
-### Gulp
-
-Install gulp
-
-```bash
-[sudo] npm install gulp -g
 ```
 
 From the root of the repo, install all of the build dependencies:
@@ -48,52 +40,13 @@ From the root of the repo, install all of the build dependencies:
 [sudo] npm install --greedy
 ```
 
-### Install the Visual Studio Code Extension Manager (VSCE)
+## Build and run locally
 
-Before packaging via gulp, ensure that you have the "vsce" tool installed globally. Otherwise, the package step will fail.
-
-From the root of the repo, run:
-
-```bash
-[sudo] npm install vsce -g
-```
-
-## Build
-
-To build the extension, run the following from the root of the repo:
-
-```bash
-gulp
-```
-
-This command will create the out\src and out\test folders at the root of the repository.
-
-## Tests
-
-Tests should be run with changes. Before you run tests, make sure you have built the extension. Run the following from the root of the repo:
-
-```bash
-gulp test
-```
-
-To run the tests within Visual Studio Code, change the debug profile to "Launch Tests" and press `F5`.
-
-## Package
-
-The package command will package the extension into a Visual Studio extension installer (.vsix file).
-It will also transpile the TypeScript into the out\src and out\test folders.
-
-From the root of the repo:
-
-```bash
-gulp package
-```
-
-The VSIX package will be created in the root of the repository.
+Hit F5 in VS Code.
 
 ## Code Structure
 
-The code is structured between the Visual Studio Code extension file, the Azure Repos extension object, and the clients, contexts, helpers and services.
+The code is structured between the Visual Studio Code extension file, the Azure Boards extension object, and the clients, contexts, helpers and services.
 
 ### Visual Studio Code Extension file
 
@@ -103,42 +56,19 @@ This is the file with the code called by Visual Studio Code to bootstrap the ext
 
 This is the object intended to have small methods that call to the feature-specific clients that manipulate the UI and make calls to Azure DevOps via the service objects. When adding new commands, the functions that are called should be defined here.
 
-### Clients
-
-These are the clients used to talk to the services (see Services below). The clients can manipulate the UI but should be the only objects calling the feature-specific services.
-
-### Contexts
-
-- Git - This context is meant to contain the client-side Git configuration information
-- Server - This context is meant to contain the server-side information needed when making calls to Azure DevOps
-
-### Helpers
-
-These are classes used to define constants, a logger, settings (configuration), strings and various utility functions.
-
-### Info
-
-These are classes used to hold data about particular objects (credentials, repository and user).
-
-### Services
-
-All of the communication to Azure DevOps should be done via services found in this folder. These services should not know anything about the client-side types used to manipulate the Visual Studio Code UI. The Q Promise APIs found in the vso-node-api package is the model used in this extension.
-
 ## Debugging
 
 To debug the extension, make sure you've installed all of the npm packages as instructed earlier. Then, open the root of the repository in Visual Studio Code and press F5. If you have the extension already installed, you'll need to uninstall it via the Command Palette and try again.
 
-During debugging, you may want to control how often polling occurs for build status and pull request updates. Or you may want to turn on debug console and `winston` logging. The [README.md](README.md) file has instructions on how to change those settings.
-
 ## Code Styles
 
-1. The various gulp commands will run `tslint` and flag any errors. Please ensure that the code stays clean.
+1. Build commands will run `tslint` and flag any errors. Please ensure that the code stays clean.
 2. All source files must have the following lines at the top:
 
 ```
  /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 ```
 
@@ -159,10 +89,3 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 ## Submitting Pull Requests
 
 We welcome pull requests! Fork this repo and send us your contributions. Go [here](https://help.github.com/articles/using-pull-requests/) to get familiar with GitHub pull requests.
-
-Before submitting your request, ensure that both `gulp` and `gulp test` succeed.
-
-**UPDATE**: With a recent commit, integration tests were added under the _test-integration_ folder. These tests are run by the CI build and the results are reported back to any pull request as a "build check". The
-integration tests are not runnable outside of the CI build without setting up additional infrastructure. As such, it isn't required that a contributor run these tests before submitting the pull request.
-However, if an issue arises that breaks the integration tests, please file an issue and I'll follow up as quickly as possible. Note that the build for this repo is set to build every night and runs unit
-and integration tests at that time.
