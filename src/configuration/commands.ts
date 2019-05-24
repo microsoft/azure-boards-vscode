@@ -12,7 +12,9 @@ import {
   IProject,
   removeOrganization,
   setCurrentOrganization,
-  setCurrentProject
+  setCurrentProject,
+  compareOrganizations,
+  compareProjects
 } from "./configuration";
 import { isValidAzureBoardsUrl } from "./url";
 
@@ -145,7 +147,7 @@ async function selectOrganization(
     label: "➕ Add organization"
   };
 
-  const organizationOptions = organizations.map(
+  const organizationOptions = organizations.sort(compareOrganizations).map(
     organization =>
       ({
         label: organization.uri,
@@ -197,7 +199,7 @@ async function selectProject(
   );
 
   const selection = await vscode.window.showQuickPick(
-    projects.map(
+    projects.sort(compareProjects).map(
       p =>
         ({
           label: p.name,
