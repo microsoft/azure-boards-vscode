@@ -127,17 +127,9 @@ export function compareOrganizations(
   orgA: IOrganization,
   orgB: IOrganization
 ): number {
-  if (orgA.uri.toUpperCase() >= orgB.uri.toUpperCase()) {
-    return 1;
-  } else {
-    return -1;
-  }
+  return orgA.uri.localeCompare(orgB.uri);
 }
 
 export function compareProjects(projA: IProject, projB: IProject): number {
-  if (projA.name.toUpperCase() >= projB.name.toUpperCase()) {
-    return 1;
-  } else {
-    return -1;
-  }
+  return projA.name.localeCompare(projB.name);
 }
