@@ -19,6 +19,10 @@ export class WorkItemTreeNodeProvider
     element?: TreeNodeParent | undefined
   ): vscode.ProviderResult<TreeNodeParent[]> {
     if (!element) {
+      if (!vscode.workspace.workspaceFolders) {
+        return [new NoOpenFolderNode()];
+      }
+
       if (!getCurrentOrganization()) {
         return [new NoConnectionNode()];
       }
@@ -60,9 +64,18 @@ export class TreeNodeParent extends vscode.TreeItem {
   }
 }
 
+class NoOpenFolderNode extends TreeNodeParent {
+  constructor() {
+    super(Resources.Configuration_NoOpenFolder);
+
+    this.contextValue = "no-folder";
+    this.iconPath = undefined;
+  }
+}
+
 class NoConnectionNode extends TreeNodeParent {
   constructor() {
-    super("Click here to connect to Azure Boards");
+    super(Resources.Configuration_ClickToConnect);
 
     this.contextValue = "no-connection";
     this.iconPath = undefined;
