@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
 import { GitExtension, Remote } from "../externals/git";
-import { SettingsPanel } from "../webviews/settings";
-import { BaseReactPanel } from "../webviews/webview";
 import { trackTelemetryEvent } from "../util/telemetry";
 
 export const enum Commands {
@@ -38,13 +36,6 @@ export function registerGlobalCommands(context: vscode.ExtensionContext) {
   //
   // Configuration
   //
-  vscode.commands.registerCommand(Commands.ConfigurationShow, () => {
-    BaseReactPanel.createOrShow<SettingsPanel>(
-      SettingsPanel,
-      context.extensionPath
-    );
-  });
-
   function mentionWorkItem(
     gitExtension: vscode.Extension<GitExtension> | undefined,
     workItemId: number

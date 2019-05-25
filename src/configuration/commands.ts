@@ -4,12 +4,12 @@ import { Commands } from "../commands/commands";
 import { getWebApiForOrganization } from "../connection";
 import { getTokenUsingDeviceFlow } from "./auth";
 import {
-  organizationExists,
   addOrganization,
   getConfiguration,
   getCurrentOrganization,
   IOrganization,
   IProject,
+  organizationExists,
   removeOrganization,
   setCurrentOrganization,
   setCurrentProject

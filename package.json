@@ -143,8 +143,6 @@
     "@types/keytar": "^4.4.0",
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
-    "@types/react": "^16.8.13",
-    "@types/react-dom": "^16.8.4",
     "tslint": "5.14.0",
     "typescript": "3.3.4000",
     "vsce": "^1.61.0",
