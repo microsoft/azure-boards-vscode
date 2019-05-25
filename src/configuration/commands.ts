@@ -118,10 +118,9 @@ export function registerConfigurationCommands(
             ConfigurationCommands.SelectOrganization
           );
         } else {
-          await setCurrentOrganization(organization);
-
           const project = await selectProject(organization);
           if (project) {
+            await setCurrentOrganization(organization);
             await setCurrentProject(project);
           }
 
