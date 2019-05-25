@@ -8,5 +8,7 @@ const enum Resources {
   Configuration_SelectOrganization = "Select an organization...",
   Configuration_RemovedOrganization = "Removed Azure Boards organization.",
   Configuration_SelectProject = "Select project...",
-  Configuration_LoadingProjects = "Loading projects..."
+  Configuration_LoadingProjects = "Loading projects...",
+  Configuration_ClickToConnect = "Click here to connect to Azure Boards",
+  Configuration_NoOpenFolder = "You have not yet opened a folder."
 }
