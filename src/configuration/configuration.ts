@@ -122,3 +122,14 @@ export async function setCurrentProject(
 export function getCurrentProject(): IProject | undefined {
   return getConfiguration().currentProject;
 }
+
+export function compareOrganizations(
+  orgA: IOrganization,
+  orgB: IOrganization
+): number {
+  return orgA.uri.localeCompare(orgB.uri);
+}
+
+export function compareProjects(projA: IProject, projB: IProject): number {
+  return projA.name.localeCompare(projB.name);
+}
