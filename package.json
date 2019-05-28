@@ -2,7 +2,8 @@
   "name": "azure-boards",
   "displayName": "Azure Boards",
   "description": "",
-  "version": "0.0.7",
+  "version": "0.1.0",
+  "license": "MIT",
   "publisher": "microsoft",
   "repository": {
     "url": "https://github.com/microsoft/azure-boards-vscode"
