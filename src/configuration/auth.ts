@@ -17,10 +17,11 @@ export async function getTokenUsingDeviceFlow(
 ): Promise<string | undefined> {
   const authOptions: IDeviceFlowAuthenticationOptions = {
     clientId: ClientId,
-    redirectUri: RedirectUri // organization.uri
+    redirectUri: RedirectUri
   };
   const tokenOptions: IDeviceFlowTokenOptions = {
-    tokenDescription: `Azure Boards VSCode extension: ${organization.uri}`
+    tokenDescription: `Azure Boards VSCode extension: ${organization.uri}`,
+    tokenScope: "vso.project vso.work"
   };
   const dfa: DeviceFlowAuthenticator = new DeviceFlowAuthenticator(
     organization.uri,
