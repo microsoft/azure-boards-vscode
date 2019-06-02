@@ -13,6 +13,10 @@ This extension provides easy access to your Azure Boards work items, directly fr
 If you are using the extension with Azure DevOps Services, ensure you have an Azure DevOps Services organization. If you do
 not have one, [sign up for Azure DevOps Services](https://aka.ms/SignupAzureDevOps/?campaign=azure~boards~vscode~readme).
 
+### Azure DevOps Server / Team Foundation Server
+
+Azure DevOps Server and Team Foundation Server are not yet supported.
+
 ## Installation
 
 First, you will need to install [Visual Studio Code](https://code.visualstudio.com/download) `1.30.0` or later.
