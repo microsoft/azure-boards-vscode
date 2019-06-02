@@ -30,7 +30,7 @@ Clicking the mention icon on a work item within the extension automatically swit
 - Azure Repos: #[work item id]
 - GitHub.com: AB#[work item id]
 
-Note: GitHub Enterprise Server support for prefixing with AB# is on the backlog.
+Note: GitHub Enterprise Server support for prefixing with AB# is [on the backlog](https://github.com/microsoft/azure-boards-vscode/issues/53).
 
 ## Support
 
