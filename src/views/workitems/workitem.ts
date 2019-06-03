@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 import { WorkItem } from "azure-devops-node-api/interfaces/WorkItemTrackingInterfaces";
 import { WorkItemTypeIcon } from "../../workitems/workitem.icons";
 
@@ -21,7 +24,7 @@ export class WorkItemComposite {
     this.workItemId = workItem.fields ? workItem.fields["System.Id"] : -1;
     this.workItemTitle = workItem.fields ? workItem.fields["System.Title"] : "";
 
-    //get index of icon from list of avaible icons for the work item type
+    //get index of icon from list of available icons for the work item type
     let i = workItemTypeIcons
       ? workItemTypeIcons.findIndex(x => x.type === this.workItemType)
       : 0;

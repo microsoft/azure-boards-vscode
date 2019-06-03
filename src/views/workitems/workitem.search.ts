@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 import * as DevOpsClient from "azure-devops-node-api";
 import { IHttpClientResponse } from "azure-devops-node-api/interfaces/common/VsoBaseInterfaces";
 

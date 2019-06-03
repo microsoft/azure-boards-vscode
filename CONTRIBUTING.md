@@ -66,10 +66,8 @@ To debug the extension, make sure you've installed all of the npm packages as in
 2. All source files must have the following lines at the top:
 
 ```
- /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 ```
 
 3. We keep LF line-endings on the server. Please set the `core.safecrlf` git config property to true.
