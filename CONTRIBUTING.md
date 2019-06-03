@@ -78,6 +78,15 @@ To debug the extension, make sure you've installed all of the npm packages as in
 git config core.safecrlf true
 ```
 
+## Packaging and releasing
+
+1. Increment the extension version in `package.json`
+2. Run `npm install -g vsce`
+3. Run `vsce package`
+4. Create and upload the package to a new GitHub release on the repo
+
+See the [Publishing Extension](https://code.visualstudio.com/api/working-with-extensions/publishing-extension) Visual Studio Code documentation for more information.
+
 ## Contribution License Agreement
 
 In order to contribute, you will need to sign a [Contributor License Agreement](https://cla.microsoft.com/).
