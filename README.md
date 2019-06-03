@@ -32,10 +32,14 @@ Clicking the mention icon on a work item within the extension automatically swit
 
 Note: GitHub Enterprise Server support for prefixing with AB# is [on the backlog](https://github.com/microsoft/azure-boards-vscode/issues/53).
 
+## Further development
+
+We believe the feature scenarios are fairly limited for this extension but if you do have a feature suggestion, go ahead and [log it in our issue list](https://github.com/microsoft/azure-boards-vscode/issues/new) or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues) about existing suggestions.
+
 ## Support
 
 Support for this extension is provided on our [GitHub Issue Tracker](https://github.com/microsoft/azure-boards-vscode/issues). You
-can submit a [bug report](https://github.com/microsoft/azure-boards-vscode/issues/new), a [feature request](https://github.com/microsoft/azure-boards-vscode/issues/new)
+can submit a [bug report](https://github.com/microsoft/azure-boards-vscode/issues/new), a [feature suggestion](https://github.com/microsoft/azure-boards-vscode/issues/new)
 or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues).
 
 ## Contributing to the Extension
