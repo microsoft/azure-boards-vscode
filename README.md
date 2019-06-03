@@ -34,7 +34,7 @@ Note: GitHub Enterprise Server support for prefixing with AB# is [on the backlog
 
 ## Further development
 
-We believe the feature scenarios are fairly limited for this extension but if you do have a feature suggestion, go ahead and [log it in our issue list](https://github.com/microsoft/azure-boards-vscode/issues/new) or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues) about existing suggestions.
+This extension is in active development. While we believe the feature scenarios are fairly limited for this extension, if you do have a feature suggestion, go ahead and [log it in our issue list](https://github.com/microsoft/azure-boards-vscode/issues/new) or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues) about existing suggestions.
 
 ## Support
 
