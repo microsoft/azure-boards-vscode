@@ -57,6 +57,9 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 The [Microsoft Privacy Statement](http://go.microsoft.com/fwlink/?LinkId=528096&clcid=0x409)
 describes the privacy statement of this software.
 
+### Data/Telemetry
+This project collects usage data and sends it to Microsoft to help improve our products and services. Read Microsoft's [privacy statement to learn more](http://go.microsoft.com/fwlink/?LinkId=521839).
+
 ## Reporting Security Issues
 
 Security issues and bugs should be reported privately, via email, to the Microsoft Security
