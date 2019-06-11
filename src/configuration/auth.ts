@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 import { openUrl } from "../util/open";
 import * as util from "util";
 import * as vscode from "vscode";
