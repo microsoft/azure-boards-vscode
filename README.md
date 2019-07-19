@@ -13,6 +13,10 @@ This extension provides easy access to your Azure Boards work items, directly fr
 If you are using the extension with Azure DevOps Services, ensure you have an Azure DevOps Services organization. If you do
 not have one, [sign up for Azure DevOps Services](https://aka.ms/SignupAzureDevOps/?campaign=azure~boards~vscode~readme).
 
+### Azure DevOps Server / Team Foundation Server
+
+Azure DevOps Server and Team Foundation Server are not yet supported.
+
 ## Installation
 
 First, you will need to install [Visual Studio Code](https://code.visualstudio.com/download) `1.30.0` or later.
@@ -26,12 +30,18 @@ Clicking the mention icon on a work item within the extension automatically swit
 - Azure Repos: #[work item id]
 - GitHub.com: AB#[work item id]
 
-Note: GitHub Enterprise Server support for prefixing with AB# is on the backlog.
+Note: GitHub Enterprise Server support for prefixing with AB# is [on the backlog](https://github.com/microsoft/azure-boards-vscode/issues/53).
+
+## Further development and roadmap
+
+This extension is in active development. While we believe the feature scenarios are fairly limited for this extension, if you do have a feature suggestion, go ahead and [log it in our issue list](https://github.com/microsoft/azure-boards-vscode/issues/new) or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues) about existing suggestions.
+
+Check our [issue list](https://github.com/microsoft/azure-boards-vscode/issues) for enhancements we plan to make. You'll notice that some are set to a project, which indicates our intent to deliver.
 
 ## Support
 
 Support for this extension is provided on our [GitHub Issue Tracker](https://github.com/microsoft/azure-boards-vscode/issues). You
-can submit a [bug report](https://github.com/microsoft/azure-boards-vscode/issues/new), a [feature request](https://github.com/microsoft/azure-boards-vscode/issues/new)
+can submit a [bug report](https://github.com/microsoft/azure-boards-vscode/issues/new), a [feature suggestion](https://github.com/microsoft/azure-boards-vscode/issues/new)
 or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues).
 
 ## Contributing to the Extension
@@ -46,6 +56,18 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 The [Microsoft Privacy Statement](http://go.microsoft.com/fwlink/?LinkId=528096&clcid=0x409)
 describes the privacy statement of this software.
+
+### Data/Telemetry
+This project collects usage data and sends it to Microsoft to help improve our products and services. Read Microsoft's [privacy statement to learn more](http://go.microsoft.com/fwlink/?LinkId=521839).
+
+## Reporting Security Issues
+
+Security issues and bugs should be reported privately, via email, to the Microsoft Security
+Response Center (MSRC) at [secure@microsoft.com](mailto:secure@microsoft.com). You should
+receive a response within 24 hours. If for some reason you do not, please follow up via
+email to ensure we received your original message. Further information, including the
+[MSRC PGP](https://technet.microsoft.com/en-us/security/dn606155) key, can be found in
+the [Security TechCenter](https://technet.microsoft.com/en-us/security/default).
 
 ## License
 
