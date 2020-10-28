@@ -23,6 +23,8 @@ First, you will need to install [Visual Studio Code](https://code.visualstudio.c
 
 To install the extension with the latest version of Visual Studio Code (version 1.30.0 is the latest as of this writing), bring up the Visual Studio Code Command Palette (`F1`), type `install` and choose `Extensions: Install Extensions`. In the `Search Extensions in Marketplace` text box, type `azure boards`. Find the `Azure Boards` extension published by _Microsoft_ and click the `Install` button. Restart Visual Studio Code.
 
+#This extension is no longer available in the extensions marketplace
+
 ## Mentioning work items in a commit message
 
 Clicking the mention icon on a work item within the extension automatically switches over to Source Control and adds the work item ID mention to the commit message. 
@@ -34,9 +36,7 @@ Note: GitHub Enterprise Server support for prefixing with AB# is [on the backlog
 
 ## Further development and roadmap
 
-This extension is in active development. While we believe the feature scenarios are fairly limited for this extension, if you do have a feature suggestion, go ahead and [log it in our issue list](https://github.com/microsoft/azure-boards-vscode/issues/new) or participate in [discussions](https://github.com/microsoft/azure-boards-vscode/issues) about existing suggestions.
-
-Check our [issue list](https://github.com/microsoft/azure-boards-vscode/issues) for enhancements we plan to make. You'll notice that some are set to a project, which indicates our intent to deliver.
+This extension is no longer in active development.
 
 ## Support
 
